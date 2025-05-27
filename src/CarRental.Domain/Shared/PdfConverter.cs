@@ -51,13 +51,13 @@ namespace CarRental.Controllers.Shared
                 $"      - Email: {rental.DriverCustomer.Email}",
                 $"      - Driver's License: {rental.DriverCustomer.DriverLicense}",
                 $"• Rented Vehicle:",
-                $"      - Model: {rental.Vehicle.model}",
-                $"      - Brand: {rental.Vehicle.brand}",
-                $"      - License Plate: {rental.Vehicle.licensePlate}",
-                $"      - Year: {rental.Vehicle.year}",
-                $"      - Color: {rental.Vehicle.color}",
-                $"      - Number of doors: {rental.Vehicle.numberOfDoors}",
-                $"      - Current mileage: {rental.Vehicle.mileage} km"
+                $"      - Model: {rental.Vehicle.Model}",
+                $"      - Brand: {rental.Vehicle.Brand}",
+                $"      - License Plate: {rental.Vehicle.LicensePlate}",
+                $"      - Year: {rental.Vehicle.Year}",
+                $"      - Color: {rental.Vehicle.Color}",
+                $"      - Number of doors: {rental.Vehicle.NumberOfDoors}",
+                $"      - Current mileage: {rental.Vehicle.Mileage} km"
             };
 
             GeneratePdf(filePath, title, lines);

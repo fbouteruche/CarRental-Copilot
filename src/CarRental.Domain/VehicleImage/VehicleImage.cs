@@ -47,7 +47,7 @@ namespace CarRental.Domain.VehicleImageModule
             int hashCode = 155997214;
             hashCode = hashCode * -1521134295 + id.GetHashCode();
             hashCode = hashCode * -1521134295 + VehicleId.GetHashCode();
-            hashCode = hashCode * -1521134295 + EqualityComparer<Bitmap?>.Default.GetHashCode(Image);
+            hashCode = hashCode * -1521134295 + (Image != null ? Image.GetHashCode() : 0);
             return hashCode;
         }
     }

@@ -86,7 +86,7 @@ namespace CarRental.Domain.RentalModule
         {
             isOpen = true;
             departureDate = openingDate;
-            vehicle.isRented = true;
+            vehicle.IsRented = true;
             rentalPrice = CalculateRental.CalculateInsurance(insuranceType);
             rentalPrice += CalculateRental.CalculateGuarantee();
             rentalPrice = Math.Round(rentalPrice, 2);
@@ -96,11 +96,11 @@ namespace CarRental.Domain.RentalModule
         {
             isOpen = false;
             returnDate = closingDate;
-            vehicle.mileage += kilometersDriven;
-            vehicle.isRented = false;
+            vehicle.Mileage += kilometersDriven;
+            vehicle.IsRented = false;
             returnPrice = rentalPrice;
             returnPrice += fuelSurcharge;
-            returnPrice += CalculateRental.CalculatePlan(planType, vehicle.vehicleGroup, kilometersDriven, departureDate, returnDate);
+            returnPrice += CalculateRental.CalculatePlan(planType, vehicle.VehicleGroup, kilometersDriven, departureDate, returnDate);
             returnPrice += CalculateRental.CalculateServices(services, departureDate, returnDate);
             returnPrice += CalculateRental.CalculateLateReturnFee(returnPrice, expectedReturnDate, returnDate);
             returnPrice -= CalculateRental.CalculateDiscountCoupon(returnPrice, coupon);

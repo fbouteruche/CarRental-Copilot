@@ -167,9 +167,9 @@ namespace CarRental.Controllers.VehicleModule
             if (validationResult == "VALID")
             {
                 vehicle.Id = Db.Insert(sqlInsertVehicle, GetVehicleParameters(vehicle));
-                if (vehicle.images != null)
+                if (vehicle.Images != null)
                 {
-                    foreach (VehicleImage vehicleImage in vehicle.images)
+                    foreach (VehicleImage vehicleImage in vehicle.Images)
                     {
                         vehicleImage.VehicleId = vehicle.Id;
                         imageController.InsertNew(vehicleImage);
@@ -184,7 +184,7 @@ namespace CarRental.Controllers.VehicleModule
 
             foreach (Vehicle vehicle in vehicles)
             {
-                vehicle.images = imageController.SelectAllImagesOfVehicle(vehicle.Id);
+                vehicle.Images = imageController.SelectAllImagesOfVehicle(vehicle.Id);
             }
 
             return vehicles;

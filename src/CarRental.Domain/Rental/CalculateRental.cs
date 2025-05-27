@@ -30,8 +30,11 @@ namespace CarRental.Domain.Shared
             return finalValue;
         }
 
-        public static double CalculatePlan(string planType, VehicleGroup vehicleGroup, double kilometersDriven, DateTime startDate, DateTime endDate)
+        public static double CalculatePlan(string planType, VehicleGroup? vehicleGroup, double kilometersDriven, DateTime startDate, DateTime endDate)
         {
+            if (vehicleGroup == null)
+                return 0;
+
             double daysInterval = (endDate - startDate).TotalDays;
             double dailyRate = 0;
             double perKmRate = 0;
