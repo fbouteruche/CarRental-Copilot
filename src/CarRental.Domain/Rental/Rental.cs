@@ -146,7 +146,7 @@ namespace CarRental.Domain.RentalModule
             return $"RentalModule = {id}, {vehicle}, {rentingEmployee}, {contractingCustomer}, {driverCustomer}, {departureDate}, {expectedReturnDate}, {returnDate}, {planType}, {insuranceType}, {rentalPrice}, {returnPrice}, {isOpen}";
         }
 
-        public override bool Equals(object obj)
+        public override bool Equals(object? obj)
         {
             return obj is Rental rental &&
                    id == rental.id &&

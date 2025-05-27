@@ -67,8 +67,8 @@ namespace CarRental.Controllers.Shared
         {
             double lineXPosition = 70;
             double lineYPosition = 15;
-            XFont titleFont = new XFont(fontFamily, titleFontSize, XFontStyle.Bold);
-            XFont textFont = new XFont(fontFamily, textFontSize, XFontStyle.Regular);
+            XFont titleFont = new XFont(fontFamily, titleFontSize, XFontStyleEx.Bold);
+            XFont textFont = new XFont(fontFamily, textFontSize, XFontStyleEx.Regular);
 
             PdfDocument pdf = new PdfDocument();
             pdf.Info.Title = titleText;

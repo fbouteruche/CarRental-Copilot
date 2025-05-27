@@ -28,7 +28,7 @@ namespace CarRental.Domain.ServiceModule
             return validationResult;
         }
 
-        public override bool Equals(object obj)
+        public override bool Equals(object? obj)
         {
             return obj is Service service &&
                    id == service.id &&

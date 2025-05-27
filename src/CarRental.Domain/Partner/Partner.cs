@@ -29,7 +29,7 @@ namespace CarRental.Domain.PartnerModule
             return validationResult;
         }
 
-        public override bool Equals(object obj)
+        public override bool Equals(object? obj)
         {
             return obj is Partner comparerdPartner &&
                    Id == comparerdPartner.Id &&

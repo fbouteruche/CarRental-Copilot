@@ -64,7 +64,7 @@ namespace CarRental.Domain.VehicleGroupModule
             return validationResult;
         }
 
-        public override bool Equals(object obj)
+        public override bool Equals(object? obj)
         {
             return obj is VehicleGroup vehicleGroup &&
                    id == vehicleGroup.id &&

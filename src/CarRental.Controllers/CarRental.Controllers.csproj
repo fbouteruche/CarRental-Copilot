@@ -6,18 +6,7 @@
     <Nullable>enable</Nullable>
     <!-- Keep original GUID for compatibility -->
     <ProjectGuid>{35789073-23E1-426D-BBC2-E1AF3DB9935E}</ProjectGuid>
-    
-    <!-- Assembly information from AssemblyInfo.cs -->
-    <AssemblyTitle>CarRental.Controllers</AssemblyTitle>
-    <Company></Company>
-    <Product>CarRental.Controllers</Product>
-    <Description></Description>
-    <Copyright>Copyright © 2021</Copyright>
-    <AssemblyVersion>1.0.0.0</AssemblyVersion>
-    <FileVersion>1.0.0.0</FileVersion>
-    
-    <!-- COM visibility -->
-    <ComVisible>false</ComVisible>
+    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
   </PropertyGroup>
 
   <ItemGroup>

@@ -52,7 +52,7 @@ namespace CarRental.Domain.CouponModule
             return $"[{id}, {Name}, {Code}, {IsFixedDiscount}, {Value}]";
         }
 
-        public override bool Equals(object obj)
+        public override bool Equals(object? obj)
         {
             return obj is Coupon comparedCoupon &&
                    Id == comparedCoupon.Id &&

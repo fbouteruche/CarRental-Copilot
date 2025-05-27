@@ -4,7 +4,7 @@ using System.Collections.Specialized;
 
 namespace CarRental.BlazorApp.Services
 {
-    public class ConfigurationAdapter : ConfigurationManager
+    public class ConfigurationAdapter
     {
         private readonly IConfiguration _configuration;
         private static ConfigurationAdapter? _instance;
@@ -19,7 +19,7 @@ namespace CarRental.BlazorApp.Services
             _instance = new ConfigurationAdapter(configuration);
         }
 
-        public new static ConnectionStringSettingsCollection ConnectionStrings
+        public static ConnectionStringSettingsCollection ConnectionStrings
         {
             get
             {
@@ -42,7 +42,7 @@ namespace CarRental.BlazorApp.Services
             }
         }
 
-        public new static NameValueCollection AppSettings
+        public static NameValueCollection AppSettings
         {
             get
             {

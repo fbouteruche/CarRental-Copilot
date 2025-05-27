@@ -59,7 +59,7 @@ namespace CarRental.Domain.EmployeeModule
             return $" {id} {Name} {InternalRegistration} {Phone} {LoginUsername} {JobTitle}";
         }
 
-        public override bool Equals(object obj)
+        public override bool Equals(object? obj)
         {
             return obj is Employee comparedEmployee &&
                    id == comparedEmployee.id &&

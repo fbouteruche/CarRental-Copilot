@@ -78,7 +78,7 @@ namespace CarRental.Domain.CustomerModule
             return $"Customer = [{id}, {Name}, {UniqueId}, {Address}, {Phone}, {Email}, {DriverLicense}, {LicenseExpiryDate}, {IsPhysicalPerson}]";
         }
 
-        public override bool Equals(object obj)
+        public override bool Equals(object? obj)
         {
             return obj is Customer otherCustomer &&
                    id == otherCustomer.id &&
