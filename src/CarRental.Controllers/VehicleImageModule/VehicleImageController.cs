@@ -5,6 +5,7 @@ using System.Data;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
+using System.Runtime.Versioning;
 using CarRental.Controllers.Shared;
 using CarRental.Domain.VehicleImageModule;
 
@@ -108,6 +109,7 @@ namespace CarRental.Controllers.VehicleImageModule
             return Db.GetAll(selectAllByVehicleIdCommand, ConvertToVehicleImage, AddParameter("VehicleId", vehicleId));
         }
 
+        [SupportedOSPlatform("windows")]
         private Dictionary<string, object> GetImageParameters(VehicleImage vehicleImage)
         {
             if (vehicleImage.Image == null)
@@ -131,6 +133,7 @@ namespace CarRental.Controllers.VehicleImageModule
             }
         }
 
+        [SupportedOSPlatform("windows")]
         private Bitmap ConvertToImage(IDataReader reader)
         {
             byte[] bytes = (byte[])(reader["Image"]);
@@ -155,8 +158,8 @@ namespace CarRental.Controllers.VehicleImageModule
             
             if (bitmap == null)
                 throw new InvalidOperationException("Failed to convert byte array to Bitmap");
-                
-            Bitmap image = new Bitmap(bitmap);
+            
+            Bitmap image = new(bitmap);
 
             return new VehicleImage(id, vehicleId, image);
         }

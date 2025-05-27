@@ -5,10 +5,10 @@ namespace CarRental.Domain.ServiceModule
 {
     public class Service : BaseEntity
     {    
-        public Service(int id, string name, bool isChargedDaily, double value)
+        public Service(int id, string? name, bool isChargedDaily, double value)
         {
             this.id = id;
-            this.Name = name;
+            this.Name = name ?? string.Empty;
             this.IsChargedDaily = isChargedDaily;
             this.Value = value;
         }

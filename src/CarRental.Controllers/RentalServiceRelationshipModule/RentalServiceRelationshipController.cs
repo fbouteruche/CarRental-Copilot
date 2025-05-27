@@ -94,7 +94,7 @@ namespace CarRental.Controllers.RentalServiceRelationshipModule
             return validationResult;
         }
 
-        public override RentalServiceRelationship SelectById(int id)
+        public override RentalServiceRelationship? SelectById(int id)
         {
             return Db.Get(sqlSelectRelationshipById, ConvertToRelationship, AddParameter("Id", id));
         }

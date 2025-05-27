@@ -21,10 +21,10 @@ namespace CarRental.Domain.VehicleGroupModule
         public double ControlledExceededKmRate { get => controlledExceededKmRate; }
         public double UnlimitedPlanRate { get => unlimitedPlanRate; }
 
-        public VehicleGroup(int id, string name, double dailyPlanRate, double dailyPerKmRate, double controlledPlanRate, int controlledKmLimit, double controlledExceededKmRate, double unlimitedPlanRate)
+        public VehicleGroup(int id, string? name, double dailyPlanRate, double dailyPerKmRate, double controlledPlanRate, int controlledKmLimit, double controlledExceededKmRate, double unlimitedPlanRate)
         {
             this.id = id;
-            this.name = name;
+            this.name = name ?? string.Empty;
             this.dailyPlanRate = dailyPlanRate;
             this.dailyPerKmRate = dailyPerKmRate;
             this.controlledPlanRate = controlledPlanRate;

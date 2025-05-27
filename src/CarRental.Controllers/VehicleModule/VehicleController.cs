@@ -189,10 +189,13 @@ namespace CarRental.Controllers.VehicleModule
 
             return vehicles;
         }
-        public override Vehicle SelectById(int id)
+        public override Vehicle? SelectById(int id)
         {
-            Vehicle vehicle = Db.Get(sqlSelectVehicleById, ConvertToVehicle, AddParameter("Id", id));
-            vehicle.Images = imageController.SelectAllImagesOfVehicle(id);
+            Vehicle? vehicle = Db.Get(sqlSelectVehicleById, ConvertToVehicle, AddParameter("Id", id));
+            if (vehicle != null)
+            {
+                vehicle.Images = imageController.SelectAllImagesOfVehicle(id);
+            }
             return vehicle;
         }
         public override string Edit(int id, Vehicle vehicle)

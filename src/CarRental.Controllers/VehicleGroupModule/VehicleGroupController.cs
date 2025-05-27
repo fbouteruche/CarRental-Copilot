@@ -117,7 +117,7 @@ namespace CarRental.Controllers.VehicleGroupModule
             return Db.Exists(sqlVehicleGroupExists, AddParameter("Id", id));
         }
 
-        public override VehicleGroup SelectById(int id)
+        public override VehicleGroup? SelectById(int id)
         {
             return Db.Get(sqlSelectVehicleGroupById, ConvertToVehicleGroup, AddParameter("Id", id));
         }

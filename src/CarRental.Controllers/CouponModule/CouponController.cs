@@ -139,12 +139,12 @@ namespace CarRental.Controllers.CouponModule
             return Db.GetAll(sqlSelectAllCoupons, ConvertToCoupon);
         }
 
-        public override Coupon SelectById(int id)
+        public override Coupon? SelectById(int id)
         {
             return Db.Get(sqlSelectCouponById, ConvertToCoupon, AddParameter("Id", id));
         }
 
-        public Coupon SelectByCode(string code)
+        public Coupon? SelectByCode(string code)
         {
             return Db.Get(sqlSelectCouponByCode, ConvertToCoupon, AddParameter("Code", code));
         }

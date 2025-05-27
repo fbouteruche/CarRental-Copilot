@@ -79,7 +79,7 @@ namespace CarRental.Controllers.ServiceModule
         {
             return Db.GetAll(sqlSelectAllServices, ConvertToService);
         }
-        public override Service SelectById(int id)
+        public override Service? SelectById(int id)
         {
             return Db.Get(sqlSelectServiceById, ConvertToService, AddParameter("Id", id));
         }

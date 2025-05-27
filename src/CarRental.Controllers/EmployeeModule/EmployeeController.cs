@@ -98,7 +98,7 @@ namespace CarRental.Controllers.EmployeeModule
             return validationResult;
         }
 
-        public override Employee SelectById(int id)
+        public override Employee? SelectById(int id)
         {
             return Db.Get(selectByIdCommand, ConvertToEmployee, AddParameter("Id", id));
         }

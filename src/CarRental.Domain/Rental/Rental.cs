@@ -48,7 +48,7 @@ namespace CarRental.Domain.RentalModule
         }
 
         // Constructor ONLY for loading from the database
-        public Rental(int id, Vehicle vehicle, Employee rentingEmployee, Customer contractingCustomer, Customer driverCustomer, CouponModule.Coupon coupon, DateTime departureDate, DateTime expectedReturnDate, DateTime returnDate, string planType, string insuranceType, double rentalPrice, double returnPrice, bool isOpen, List<Service> services)
+        public Rental(int id, Vehicle vehicle, Employee rentingEmployee, Customer contractingCustomer, Customer driverCustomer, CouponModule.Coupon? coupon, DateTime departureDate, DateTime expectedReturnDate, DateTime returnDate, string? planType, string? insuranceType, double rentalPrice, double returnPrice, bool isOpen, List<Service> services)
         {
             this.id = id;
             this.vehicle = vehicle;
@@ -59,8 +59,8 @@ namespace CarRental.Domain.RentalModule
             this.departureDate = departureDate;
             this.expectedReturnDate = expectedReturnDate;
             this.returnDate = returnDate;
-            this.planType = planType;
-            this.insuranceType = insuranceType;
+            this.planType = planType ?? string.Empty;
+            this.insuranceType = insuranceType ?? string.Empty;
             this.rentalPrice = rentalPrice;
             this.returnPrice = returnPrice;
             this.isOpen = isOpen;

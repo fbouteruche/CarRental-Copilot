@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
+using System.Runtime.Versioning;
 using System.Text;
 using System.Threading.Tasks;
 using CarRental.Domain.Shared;
@@ -10,6 +11,7 @@ using System.IO;
 
 namespace CarRental.Domain.VehicleImageModule
 {
+    [SupportedOSPlatform("windows")]
     public class VehicleImage : BaseEntity
     {
         public int VehicleId { get; set; }

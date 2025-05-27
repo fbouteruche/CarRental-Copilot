@@ -120,7 +120,7 @@ namespace CarRental.Controllers.CustomersModule
             return validationResult;
         }
 
-        public override Customer SelectById(int id)
+        public override Customer? SelectById(int id)
         {
             return Db.Get(sqlSelectCustomerById, ConvertToCustomer, AddParameter("Id", id));
         }
