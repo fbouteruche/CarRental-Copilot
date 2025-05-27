@@ -3,6 +3,7 @@ using CarRental.BlazorApp.Services;
 using CarRental.Controllers.CustomersModule;
 using CarRental.Controllers.VehicleModule;
 using System.Configuration;
+using System.Runtime.Versioning;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -12,7 +13,11 @@ builder.Services.AddRazorComponents()
 
 // Configure services for dependency injection
 builder.Services.AddScoped<CustomerController>();
-builder.Services.AddScoped<VehicleController>();
+// Only register VehicleController on Windows platforms
+if (OperatingSystem.IsWindows())
+{
+    builder.Services.AddScoped<VehicleController>();
+}
 
 // Initialize configuration adapter for legacy code
 ConfigurationAdapter.Initialize(builder.Configuration);

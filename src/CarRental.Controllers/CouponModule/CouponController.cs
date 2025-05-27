@@ -205,15 +205,15 @@ namespace CarRental.Controllers.CouponModule
         private Coupon ConvertToCoupon(IDataReader reader)
         {
             int id = Convert.ToInt32(reader["Id"]);
-            string name = Convert.ToString(reader["CouponName"]);
-            string code = Convert.ToString(reader["Code"]);
+            string? name = reader["CouponName"] != DBNull.Value ? Convert.ToString(reader["CouponName"]) : null;
+            string? code = reader["Code"] != DBNull.Value ? Convert.ToString(reader["Code"]) : null;
             double minimumValue = Convert.ToDouble(reader["MinimumValue"]);
             double value = Convert.ToDouble(reader["Value"]);            
             bool isFixedDiscount = Convert.ToBoolean(reader["IsFixedDiscount"]);
             DateTime expirationDate = Convert.ToDateTime(reader["Validity"]);
 
             int partnerId = Convert.ToInt32(reader["PartnerId"]);
-            string partnerName = Convert.ToString(reader["PartnerName"]);
+            string? partnerName = reader["PartnerName"] != DBNull.Value ? Convert.ToString(reader["PartnerName"]) : null;
             Partner partner = new Partner(partnerId, partnerName);
 
             Coupon coupon = new Coupon(id, name, code, value, minimumValue, isFixedDiscount, expirationDate, partner);

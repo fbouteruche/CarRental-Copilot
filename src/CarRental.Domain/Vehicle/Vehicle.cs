@@ -29,16 +29,16 @@ namespace CarRental.Domain.VehicleModule
 
         public Vehicle() { }
 
-        public Vehicle(int id, string model, VehicleGroup vehicleGroup, string licensePlate, string chassis, string brand, string color, string fuelType, double tankCapacity, int year, double mileage, int numberOfDoors, int passengerCapacity, char trunkSize, bool hasAirConditioning, bool hasPowerSteering, bool hasAbsBrakes, bool isRented, List<VehicleImage>? images)
+        public Vehicle(int id, string? model, VehicleGroup vehicleGroup, string? licensePlate, string? chassis, string? brand, string? color, string? fuelType, double tankCapacity, int year, double mileage, int numberOfDoors, int passengerCapacity, char trunkSize, bool hasAirConditioning, bool hasPowerSteering, bool hasAbsBrakes, bool isRented, List<VehicleImage>? images)
         {
             this.id = id;
-            this.Model = model;
+            this.Model = model ?? string.Empty;
             this.VehicleGroup = vehicleGroup;
-            this.LicensePlate = licensePlate;
-            this.Chassis = chassis;
-            this.Brand = brand;
-            this.Color = color;
-            this.FuelType = fuelType;
+            this.LicensePlate = licensePlate ?? string.Empty;
+            this.Chassis = chassis ?? string.Empty;
+            this.Brand = brand ?? string.Empty;
+            this.Color = color ?? string.Empty;
+            this.FuelType = fuelType ?? string.Empty;
             this.TankCapacity = tankCapacity;
             this.Year = year;
             this.Mileage = mileage;

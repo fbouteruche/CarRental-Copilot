@@ -12,11 +12,13 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
+using System.Runtime.Versioning;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace CarRental.Controllers.RentalServiceRelationshipModule
 {
+    [SupportedOSPlatform("windows")]
     public class RentalServiceRelationshipController : Controller<RentalServiceRelationship>
     {
         private int id = 0;

@@ -13,12 +13,14 @@ using CarRental.Domain.VehicleModule;
 using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Runtime.Versioning;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace CarRental.Controllers.RentalModule
 {
+    [SupportedOSPlatform("windows")]
     public class RentalController : Controller<Rental>
     {
         private VehicleController vehicleController = null;
