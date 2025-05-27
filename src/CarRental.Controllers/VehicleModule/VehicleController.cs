@@ -281,7 +281,7 @@ namespace CarRental.Controllers.VehicleModule
             var hasAbsBrakes = Convert.ToBoolean(reader["HasAbsBrakes"]);
             var isRented = Convert.ToBoolean(reader["IsRented"]);
 
-            string name = Convert.ToString(reader["Name"]);
+            string? name = Convert.ToString(reader["Name"]) ?? string.Empty;
             double dailyPlanRate = Convert.ToDouble(reader["DailyPlanRate"]);
             double dailyPerKmRate = Convert.ToDouble(reader["DailyKmRate"]);
             double controlledPlanRate = Convert.ToDouble(reader["ControlledPlanRate"]);

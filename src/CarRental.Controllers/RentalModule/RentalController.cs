@@ -130,7 +130,11 @@ namespace CarRental.Controllers.RentalModule
             List<int> serviceIds = Db.GetAll(sqlSelectServiceIdByRentalId, ConvertToInt, AddParameter("RentalId", rentalId));
             foreach (int serviceId in serviceIds)
             {
-                rentalServices.Add(serviceController.SelectById(serviceId));
+                Service? service = serviceController?.SelectById(serviceId);
+                if (service != null)
+                {
+                    rentalServices.Add(service);
+                }
             }
             return rentalServices;
         }
@@ -178,7 +182,7 @@ namespace CarRental.Controllers.RentalModule
             if (rental.Coupon != null)
                 parameters.Add("CouponId", rental.Coupon.Id);
             else
-                parameters.Add("CouponId", null);
+                parameters.Add("CouponId", DBNull.Value);
             parameters.Add("DepartureDate", rental.DepartureDate);
             parameters.Add("ExpectedReturnDate", rental.ExpectedReturnDate);
             parameters.Add("ReturnDate", rental.ReturnDate);
@@ -208,18 +212,18 @@ namespace CarRental.Controllers.RentalModule
             var departureDate = Convert.ToDateTime(reader["DepartureDate"]);
             var expectedReturnDate = Convert.ToDateTime(reader["ExpectedReturnDate"]);
             var returnDate = Convert.ToDateTime(reader["ReturnDate"]);
-            var planType = Convert.ToString(reader["PlanType"]);
-            var insuranceType = Convert.ToString(reader["InsuranceType"]);
+            var planType = Convert.ToString(reader["PlanType"]) ?? string.Empty;
+            var insuranceType = Convert.ToString(reader["InsuranceType"]) ?? string.Empty;
             var rentalPrice = Convert.ToDouble(reader["RentalPrice"]);
             var returnPrice = Convert.ToDouble(reader["ReturnPrice"]);
             var isOpen = Convert.ToBoolean(reader["IsOpen"]);
 
             List<Service> rentalServices = SelectServicesByRentalId(id);
 
-            Vehicle? vehicle = vehicleController.SelectById(vehicleId);
-            Employee? rentingEmployee = employeeController.SelectById(employeeId);
-            Customer? contractingCustomer = customerController.SelectById(contractingClientId);
-            Customer? driverCustomer = customerController.SelectById(driverClientId);
+            Vehicle? vehicle = vehicleController?.SelectById(vehicleId);
+            Employee? rentingEmployee = employeeController?.SelectById(employeeId);
+            Customer? contractingCustomer = customerController?.SelectById(contractingClientId);
+            Customer? driverCustomer = customerController?.SelectById(driverClientId);
             Coupon? coupon = null;
             if (couponId != 0)
                 coupon = couponController.SelectById(couponId);

@@ -93,7 +93,7 @@ namespace CarRental.Domain.Shared
             return totalFee;
         }
 
-        public static double CalculateDiscountCoupon(double totalPrice, CouponModule.Coupon coupon)
+        public static double CalculateDiscountCoupon(double totalPrice, CouponModule.Coupon? coupon)
         {
             double discount = 0;
             if (coupon != null)

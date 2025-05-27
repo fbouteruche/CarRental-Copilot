@@ -160,7 +160,7 @@ namespace CarRental.Controllers.CustomersModule
             parameters.Add("Phone", customer.Phone);
             parameters.Add("Email", customer.Email);
             parameters.Add("DriverLicense", customer.DriverLicense);
-            parameters.Add("DriverLicenseValidity", customer.LicenseExpiryDate);
+            parameters.Add("DriverLicenseValidity", customer.LicenseExpiryDate.HasValue ? (object)customer.LicenseExpiryDate.Value : DBNull.Value);
             parameters.Add("IsIndividual", customer.IsPhysicalPerson);
 
             return parameters;

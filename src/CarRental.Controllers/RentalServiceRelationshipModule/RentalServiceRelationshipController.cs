@@ -120,7 +120,11 @@ namespace CarRental.Controllers.RentalServiceRelationshipModule
             foreach (Service item in serviceController.SelectAll())
                 if (item.Id == serviceId)
                     filteredServices.Add(item);
-            Rental rental = rentalController.SelectById(rentalId);
+            Rental? rental = rentalController.SelectById(rentalId);
+            if (rental == null)
+            {
+                throw new InvalidOperationException($"Rental with ID {rentalId} not found.");
+            }
 
             return new RentalServiceRelationship(relationshipId, rental, filteredServices);
         }
