@@ -1,4 +1,4 @@
-﻿using CarRental.Controllers.CustomersModule;
+using CarRental.Controllers.CustomersModule;
 using CarRental.Controllers.CouponModule;
 using CarRental.Controllers.EmployeeModule;
 using CarRental.Controllers.RentalModule;
@@ -12,18 +12,28 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
-using System.Runtime.Versioning;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace CarRental.Controllers.RentalServiceRelationshipModule
 {
-    [SupportedOSPlatform("windows")]
     public class RentalServiceRelationshipController : Controller<RentalServiceRelationship>
     {
         private int id = 0;
-        ServiceController serviceController = new ServiceController();
-        RentalController rentalController = new RentalController(new VehicleController(), new EmployeeController(), new CustomerController(), new ServiceController(), new CouponController());
+        private readonly ServiceController serviceController;
+        private readonly RentalController rentalController;
+        
+        public RentalServiceRelationshipController()
+        {
+            serviceController = new ServiceController();
+            rentalController = new RentalController();
+        }
+        
+        public RentalServiceRelationshipController(ServiceController serviceController, RentalController rentalController)
+        {
+            this.serviceController = serviceController;
+            this.rentalController = rentalController;
+        }
         #region relationship queries
         private const string sqlInsertRelationship =
                 @"INSERT INTO [Service_Rental]

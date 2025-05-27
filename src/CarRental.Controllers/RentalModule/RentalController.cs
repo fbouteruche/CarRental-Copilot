@@ -13,21 +13,24 @@ using CarRental.Domain.VehicleModule;
 using System;
 using System.Collections.Generic;
 using System.Data;
-using System.Runtime.Versioning;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace CarRental.Controllers.RentalModule
 {
-    [SupportedOSPlatform("windows")]
     public class RentalController : Controller<Rental>
     {
         private VehicleController? vehicleController = null;
         private EmployeeController? employeeController = null;
         private CustomerController? customerController = null;
         private ServiceController? serviceController = null;
-        private CouponController couponController = new CouponController();
+        private CouponController? couponController = null;
+
+        public RentalController() 
+        {
+            // Default constructor for DI
+        }
 
         public RentalController(VehicleController vehicleController, EmployeeController employeeController, CustomerController customerController, ServiceController serviceController, CouponController couponController)
         {
@@ -35,7 +38,7 @@ namespace CarRental.Controllers.RentalModule
             this.employeeController = employeeController;
             this.customerController = customerController;
             this.serviceController = serviceController;
-            //this.couponController = couponController; // If you want to use a different couponController instance, uncomment this line.
+            this.couponController = couponController;
         }
 
         #region queries
@@ -225,7 +228,7 @@ namespace CarRental.Controllers.RentalModule
             Customer? contractingCustomer = customerController?.SelectById(contractingClientId);
             Customer? driverCustomer = customerController?.SelectById(driverClientId);
             Coupon? coupon = null;
-            if (couponId != 0)
+            if (couponId != 0 && couponController != null)
                 coupon = couponController.SelectById(couponId);
 
             if (vehicle == null || rentingEmployee == null || contractingCustomer == null || driverCustomer == null)

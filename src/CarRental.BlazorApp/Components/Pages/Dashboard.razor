@@ -99,6 +99,18 @@
 
     [Inject]
     private VehicleController VehicleController { get; set; } = default!;
+    
+    [Inject]
+    private EmployeeController EmployeeController { get; set; } = default!;
+    
+    [Inject]
+    private ServiceController ServiceController { get; set; } = default!;
+    
+    [Inject]
+    private CouponController CouponController { get; set; } = default!;
+    
+    [Inject]
+    private RentalController RentalController { get; set; } = default!;
 
     private int totalVehicles = 0;
     private int availableVehicles = 0;
@@ -106,10 +118,6 @@
     private int activeRentals = 0;
     private int returnsToday = 0;
     private int returnsIn7Days = 0;
-
-    // Manually inject these for now - would use DI in a real implementation
-    private RentalController? rentalController;
-    private ServiceController? serviceController;
 
     protected override void OnInitialized()
     {
@@ -127,22 +135,13 @@
         var allCustomers = CustomerController.SelectAll();
         totalCustomers = allCustomers.Count;
 
-        // Initialize controllers (would use DI in a real implementation)
-        var employeeController = new EmployeeController();
-        serviceController = new ServiceController();
-        var couponController = new CouponController();
-        rentalController = new RentalController(VehicleController, employeeController, CustomerController, serviceController, couponController);
-
         // Load rental data
         LoadRentalDashboard();
     }
 
     private void LoadRentalDashboard()
     {
-        if (rentalController == null)
-            return;
-
-        var allRentals = rentalController.SelectAll();
+        var allRentals = RentalController.SelectAll();
         activeRentals = allRentals.Count(r => r.IsOpen);
 
         returnsToday = 0;

@@ -6,12 +6,9 @@ using CarRental.Domain.VehicleModule;
 using System;
 using System.Collections.Generic;
 using System.Data;
-using System.Drawing;
-using System.Runtime.Versioning;
 
 namespace CarRental.Controllers.VehicleModule
 {
-    [SupportedOSPlatform("windows")]
     public class VehicleController : Controller<Vehicle>
     {
         private VehicleImageController imageController = new VehicleImageController();

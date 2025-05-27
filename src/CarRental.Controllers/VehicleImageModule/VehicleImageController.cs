@@ -2,16 +2,14 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
-using System.Drawing;
-using System.Drawing.Imaging;
 using System.IO;
-using System.Runtime.Versioning;
 using CarRental.Controllers.Shared;
 using CarRental.Domain.VehicleImageModule;
+using SixLabors.ImageSharp;
+using SixLabors.ImageSharp.PixelFormats;
 
 namespace CarRental.Controllers.VehicleImageModule
 {
-    [SupportedOSPlatform("windows")]
     public class VehicleImageController : Controller<VehicleImage>
     {
         #region Queries
@@ -110,42 +108,20 @@ namespace CarRental.Controllers.VehicleImageModule
             return Db.GetAll(selectAllByVehicleIdCommand, ConvertToVehicleImage, AddParameter("VehicleId", vehicleId));
         }
 
-        [SupportedOSPlatform("windows")]
         private Dictionary<string, object> GetImageParameters(VehicleImage vehicleImage)
         {
-            if (vehicleImage.Image == null)
+            if (vehicleImage.ImageData == null)
             {
-                throw new ArgumentException("Vehicle image cannot be null");
+                throw new ArgumentException("Vehicle image data cannot be null");
             }
             
-            Bitmap bitmap = vehicleImage.Image;
-            using (MemoryStream memory = new MemoryStream())
-            {
-                bitmap.Save(memory, ImageFormat.Bmp);
-                byte[] imageBytes = memory.ToArray();
+            var parameters = new Dictionary<string, object>();
 
-                var parameters = new Dictionary<string, object>();
+            parameters.Add("Id", vehicleImage.Id);
+            parameters.Add("VehicleId", vehicleImage.VehicleId);
+            parameters.Add("Image", vehicleImage.ImageData);
 
-                parameters.Add("Id", vehicleImage.Id);
-                parameters.Add("VehicleId", vehicleImage.VehicleId);
-                parameters.Add("Image", imageBytes);
-
-                return parameters;
-            }
-        }
-
-        [SupportedOSPlatform("windows")]
-        private Bitmap ConvertToImage(IDataReader reader)
-        {
-            byte[] bytes = (byte[])(reader["Image"]);
-
-            TypeConverter typeConverter = TypeDescriptor.GetConverter(typeof(Bitmap));
-            Bitmap? bitmap = (Bitmap?)typeConverter.ConvertFrom(bytes);
-
-            if (bitmap == null)
-                throw new InvalidOperationException("Failed to convert byte array to Bitmap");
-                
-            return bitmap;
+            return parameters;
         }
 
         private VehicleImage ConvertToVehicleImage(IDataReader reader)
@@ -153,16 +129,8 @@ namespace CarRental.Controllers.VehicleImageModule
             byte[] byteArray = (byte[])(reader["Image"]);
             var id = Convert.ToInt32(reader["Id"]);
             var vehicleId = Convert.ToInt32(reader["VehicleId"]);
-
-            TypeConverter typeConverter = TypeDescriptor.GetConverter(typeof(Bitmap));
-            Bitmap? bitmap = (Bitmap?)typeConverter.ConvertFrom(byteArray);
             
-            if (bitmap == null)
-                throw new InvalidOperationException("Failed to convert byte array to Bitmap");
-            
-            Bitmap image = new(bitmap);
-
-            return new VehicleImage(id, vehicleId, image);
+            return new VehicleImage(id, vehicleId, byteArray);
         }
     }
 }
