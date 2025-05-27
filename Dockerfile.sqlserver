@@ -1,0 +1,24 @@
+FROM mcr.microsoft.com/mssql/server:2019-latest
+
+USER root
+
+# Create app directory
+WORKDIR /usr/src/app
+
+# Copy initialization script
+COPY sql-scripts/init-db.sql /usr/src/app/init-db.sql
+
+# Grant permissions for the init script
+RUN chmod +x /usr/src/app/init-db.sql
+
+# Set environment variables
+ENV SA_PASSWORD=CarRental#123
+ENV ACCEPT_EULA=Y
+ENV MSSQL_PID=Express
+
+# Expose SQL Server port
+EXPOSE 1433
+
+# Run SQL Server and initialize the database
+USER mssql
+CMD /bin/bash -c "(/opt/mssql/bin/sqlservr &) && sleep 30 && /opt/mssql-tools/bin/sqlcmd -S localhost -U sa -P CarRental#123 -i /usr/src/app/init-db.sql && tail -f /dev/null"
