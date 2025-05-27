@@ -121,7 +121,7 @@
         // Load vehicles data
         var allVehicles = VehicleController.SelectAll();
         totalVehicles = allVehicles.Count;
-        availableVehicles = allVehicles.Count(v => !v.isRented);
+        availableVehicles = allVehicles.Count(v => !v.IsRented);
 
         // Load customers data
         var allCustomers = CustomerController.SelectAll();
