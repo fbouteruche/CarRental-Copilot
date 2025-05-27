@@ -14,20 +14,20 @@ namespace CarRental.Domain.EmployeeModule
 
         public string UserPassword { get; }
 
-        public Employee(int id, string name, string uniqueIdentifier, string address, string phone, string email, int internalRegistrationId, string loginUserName,string userPassword, DateTime hiringDate, string jobTitle, double salary,bool isPhysicalPerson)
+        public Employee(int id, string? name, string? uniqueIdentifier, string? address, string? phone, string? email, int internalRegistrationId, string? loginUserName, string? userPassword, DateTime hiringDate, string? jobTitle, double salary, bool isPhysicalPerson)
         {
             this.id = id;
-            Name = name;
-            UniqueId = uniqueIdentifier;
-            Address = address;
-            Phone = phone;
-            Email = email;
+            Name = name ?? string.Empty;
+            UniqueId = uniqueIdentifier ?? string.Empty;
+            Address = address ?? string.Empty;
+            Phone = phone ?? string.Empty;
+            Email = email ?? string.Empty;
             IsPhysicalPerson = true;
             InternalRegistration = internalRegistrationId;
-            LoginUsername = loginUserName;
-            UserPassword = userPassword;
+            LoginUsername = loginUserName ?? string.Empty;
+            UserPassword = userPassword ?? string.Empty;
             HiringDate = hiringDate;
-            JobTitle = jobTitle;
+            JobTitle = jobTitle ?? string.Empty;
             Salary = salary;
             IsPhysicalPerson = isPhysicalPerson;
         }

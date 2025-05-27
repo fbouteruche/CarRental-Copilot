@@ -214,15 +214,18 @@ namespace CarRental.Controllers.RentalModule
 
             List<Service> rentalServices = SelectServicesByRentalId(id);
 
-            Vehicle vehicle = vehicleController.SelectById(vehicleId);
-            Employee rentingEmployee = employeeController.SelectById(employeeId);
-            Customer contractingCustomer = customerController.SelectById(contractingClientId);
-            Customer driverCustomer = customerController.SelectById(driverClientId);
-            Coupon coupon;
+            Vehicle? vehicle = vehicleController.SelectById(vehicleId);
+            Employee? rentingEmployee = employeeController.SelectById(employeeId);
+            Customer? contractingCustomer = customerController.SelectById(contractingClientId);
+            Customer? driverCustomer = customerController.SelectById(driverClientId);
+            Coupon? coupon = null;
             if (couponId != 0)
                 coupon = couponController.SelectById(couponId);
-            else
-                coupon = null;
+
+            if (vehicle == null || rentingEmployee == null || contractingCustomer == null || driverCustomer == null)
+            {
+                throw new ArgumentException("Required entity not found in the database");
+            }
 
             return new Rental(id, vehicle, rentingEmployee, contractingCustomer, driverCustomer, coupon, departureDate, expectedReturnDate, returnDate, planType, insuranceType, rentalPrice, returnPrice, isOpen, rentalServices);
         }
