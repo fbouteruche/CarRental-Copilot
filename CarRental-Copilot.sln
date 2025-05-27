@@ -11,6 +11,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CarRental.Controllers", "sr
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CarRental.BlazorApp", "src\CarRental.BlazorApp\CarRental.BlazorApp.csproj", "{A8C0DD1F-D307-4C7B-B565-207997F43A7E}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CarRental.Tests", "src\CarRental.Tests\CarRental.Tests.csproj", "{5DEF9302-2DDF-456E-92E0-09774B401F45}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -32,10 +34,15 @@ Global
 		{A8C0DD1F-D307-4C7B-B565-207997F43A7E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A8C0DD1F-D307-4C7B-B565-207997F43A7E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A8C0DD1F-D307-4C7B-B565-207997F43A7E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5DEF9302-2DDF-456E-92E0-09774B401F45}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5DEF9302-2DDF-456E-92E0-09774B401F45}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5DEF9302-2DDF-456E-92E0-09774B401F45}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5DEF9302-2DDF-456E-92E0-09774B401F45}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{7F169E59-39E2-4908-BE88-38206B8983F7} = {0C8A8F3B-C093-42B2-8910-2C0FFC921AB5}
 		{35789073-23E1-426D-BBC2-E1AF3DB9935E} = {0C8A8F3B-C093-42B2-8910-2C0FFC921AB5}
 		{A8C0DD1F-D307-4C7B-B565-207997F43A7E} = {0C8A8F3B-C093-42B2-8910-2C0FFC921AB5}
+		{5DEF9302-2DDF-456E-92E0-09774B401F45} = {0C8A8F3B-C093-42B2-8910-2C0FFC921AB5}
 	EndGlobalSection
 EndGlobal

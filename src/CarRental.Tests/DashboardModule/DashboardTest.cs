@@ -1,14 +1,17 @@
-using Microsoft.AspNetCore.Mvc.Testing;
-using Microsoft.Extensions.DependencyInjection;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.Net.Http;
 using System.Threading.Tasks;
-using Xunit;
+using Microsoft.AspNetCore.Mvc.Testing;
+using CarRental.BlazorApp;
+using FluentAssertions;
 
-namespace CarRental.BlazorApp.Tests
+namespace CarRental.Tests.DashboardModule
 {
+    [TestClass]
+    [TestCategory("Integration")]
     public class DashboardTest
     {
-        [Fact]
+        [TestMethod]
         public async Task Dashboard_ShouldLoad_WithoutErrors()
         {
             // Arrange
@@ -24,14 +27,14 @@ namespace CarRental.BlazorApp.Tests
 
             // Assert
             response.EnsureSuccessStatusCode(); // Status code 200-299
-            Assert.Equal(System.Net.HttpStatusCode.OK, response.StatusCode);
+            response.StatusCode.Should().Be(System.Net.HttpStatusCode.OK);
             
             // Optionally read and assert on the content
             var content = await response.Content.ReadAsStringAsync();
-            Assert.Contains("Dashboard", content); // Page title should be in the content
-            Assert.Contains("Vehicles", content);
-            Assert.Contains("Customers", content);
-            Assert.Contains("Rentals", content);
+            content.Should().Contain("Dashboard"); // Page title should be in the content
+            content.Should().Contain("Vehicles");
+            content.Should().Contain("Customers");
+            content.Should().Contain("Rentals");
         }
     }
 }
