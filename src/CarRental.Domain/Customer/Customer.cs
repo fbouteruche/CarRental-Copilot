@@ -9,15 +9,15 @@ namespace CarRental.Domain.CustomerModule
         public string DriverLicense { get; }
         public DateTime? LicenseExpiryDate { get; }
 
-        public Customer(int id, string name, string uniqueIdentifier, string address, string phone, string email, string driverLicenseNumber, DateTime? licenseExpiryDate, bool isPhysicalPerson)
+        public Customer(int id, string? name, string? uniqueIdentifier, string? address, string? phone, string? email, string? driverLicenseNumber, DateTime? licenseExpiryDate, bool isPhysicalPerson)
         {
             this.id = id;
-            Name = name;
-            UniqueId = uniqueIdentifier;
-            Address = address;
-            Phone = phone;
-            Email = email;
-            DriverLicense = driverLicenseNumber;
+            Name = name ?? string.Empty;
+            UniqueId = uniqueIdentifier ?? string.Empty;
+            Address = address ?? string.Empty;
+            Phone = phone ?? string.Empty;
+            Email = email ?? string.Empty;
+            DriverLicense = driverLicenseNumber ?? string.Empty;
             LicenseExpiryDate = licenseExpiryDate;
             IsPhysicalPerson = isPhysicalPerson;
         }

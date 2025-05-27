@@ -11,6 +11,7 @@ using CarRental.Domain.VehicleImageModule;
 
 namespace CarRental.Controllers.VehicleImageModule
 {
+    [SupportedOSPlatform("windows")]
     public class VehicleImageController : Controller<VehicleImage>
     {
         #region Queries

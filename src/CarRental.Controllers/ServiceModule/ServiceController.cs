@@ -129,7 +129,7 @@ namespace CarRental.Controllers.ServiceModule
         private Service ConvertToService(IDataReader reader)
         {
             int id = Convert.ToInt32(reader["Id"]);
-            string name = Convert.ToString(reader["Name"]);
+            string? name = reader["Name"] != DBNull.Value ? Convert.ToString(reader["Name"]) : string.Empty;
             bool isDailyCharged = Convert.ToBoolean(reader["IsDailyCharged"]);
             double value = Convert.ToDouble(reader["Value"]);
 
