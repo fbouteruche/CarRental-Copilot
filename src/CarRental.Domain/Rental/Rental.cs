@@ -15,7 +15,7 @@ namespace CarRental.Domain.RentalModule
         private Employee rentingEmployee;
         private Customer contractingCustomer;
         private Customer driverCustomer;
-        private Coupon coupon;
+        private CouponModule.Coupon? coupon;
         private DateTime departureDate;
         private DateTime expectedReturnDate;
         private DateTime returnDate;
@@ -27,7 +27,7 @@ namespace CarRental.Domain.RentalModule
         private List<Service> services;
 
         // Constructor for common use (ISSUES IN TESTS. EQUALS RETURNS DIFFERENT)
-        public Rental(int id, Vehicle vehicle, Employee rentingEmployee, Customer contractingCustomer, Customer driverCustomer, CouponModule.Coupon coupon, DateTime departureDate, DateTime expectedReturnDate, string planType, string insuranceType, List<Service> services)
+        public Rental(int id, Vehicle vehicle, Employee rentingEmployee, Customer contractingCustomer, Customer driverCustomer, CouponModule.Coupon? coupon, DateTime departureDate, DateTime expectedReturnDate, string planType, string insuranceType, List<Service> services)
         {
             this.id = id;
             this.vehicle = vehicle;
@@ -71,7 +71,7 @@ namespace CarRental.Domain.RentalModule
         public Employee RentingEmployee { get => rentingEmployee; }
         public Customer ContractingCustomer { get => contractingCustomer; }
         public Customer DriverCustomer { get => driverCustomer; }
-        public CouponModule.Coupon Coupon { get => coupon; }
+        public CouponModule.Coupon? Coupon { get => coupon; }
         public DateTime DepartureDate { get => departureDate; }
         public DateTime ExpectedReturnDate { get => expectedReturnDate; }
         public DateTime ReturnDate { get => returnDate; }

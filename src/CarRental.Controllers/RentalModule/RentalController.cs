@@ -23,10 +23,10 @@ namespace CarRental.Controllers.RentalModule
     [SupportedOSPlatform("windows")]
     public class RentalController : Controller<Rental>
     {
-        private VehicleController vehicleController = null;
-        private EmployeeController employeeController = null;
-        private CustomerController customerController = null;
-        private ServiceController serviceController = null;
+        private VehicleController? vehicleController = null;
+        private EmployeeController? employeeController = null;
+        private CustomerController? customerController = null;
+        private ServiceController? serviceController = null;
         private CouponController couponController = new CouponController();
 
         public RentalController(VehicleController vehicleController, EmployeeController employeeController, CustomerController customerController, ServiceController serviceController, CouponController couponController)
@@ -119,7 +119,7 @@ namespace CarRental.Controllers.RentalModule
         {
             return Db.GetAll(sqlSelectAllRentals, ConvertToRental);
         }
-        public override Rental SelectById(int id)
+        public override Rental? SelectById(int id)
         {
             return Db.Get(sqlSelectRentalById, ConvertToRental, AddParameter("Id", id));
         }
