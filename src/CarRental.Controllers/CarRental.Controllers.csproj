@@ -1,67 +1,33 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+<Project Sdk="Microsoft.NET.Sdk">
+
   <PropertyGroup>
-    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <TargetFramework>net8.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <!-- Keep original GUID for compatibility -->
     <ProjectGuid>{35789073-23E1-426D-BBC2-E1AF3DB9935E}</ProjectGuid>
-    <OutputType>Library</OutputType>
-    <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>CarRental.Controllers</RootNamespace>
-    <AssemblyName>CarRental.Controllers</AssemblyName>
-    <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
-    <FileAlignment>512</FileAlignment>
-    <Deterministic>true</Deterministic>
+    
+    <!-- Assembly information from AssemblyInfo.cs -->
+    <AssemblyTitle>CarRental.Controllers</AssemblyTitle>
+    <Company></Company>
+    <Product>CarRental.Controllers</Product>
+    <Description></Description>
+    <Copyright>Copyright © 2021</Copyright>
+    <AssemblyVersion>1.0.0.0</AssemblyVersion>
+    <FileVersion>1.0.0.0</FileVersion>
+    
+    <!-- COM visibility -->
+    <ComVisible>false</ComVisible>
   </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <DebugSymbols>true</DebugSymbols>
-    <DebugType>full</DebugType>
-    <Optimize>false</Optimize>
-    <OutputPath>bin\Debug\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <DebugType>pdbonly</DebugType>
-    <Optimize>true</Optimize>
-    <OutputPath>bin\Release\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-  </PropertyGroup>
+
   <ItemGroup>
-    <Reference Include="System" />
-    <Reference Include="System.Configuration" />
-    <Reference Include="System.Core" />
-    <Reference Include="System.Drawing" />
-    <Reference Include="System.Xml.Linq" />
-    <Reference Include="System.Data.DataSetExtensions" />
-    <Reference Include="Microsoft.CSharp" />
-    <Reference Include="System.Data" />
-    <Reference Include="System.Net.Http" />
-    <Reference Include="System.Xml" />
+    <PackageReference Include="System.Configuration.ConfigurationManager" Version="8.0.0" />
+    <PackageReference Include="System.Drawing.Common" Version="8.0.6" />
+    <PackageReference Include="System.Data.SqlClient" Version="4.8.6" />
   </ItemGroup>
+
   <ItemGroup>
-    <Compile Include="CouponModule\CouponController.cs" />
-    <Compile Include="EmployeeModule\EmployeeController.cs" />
-    <Compile Include="VehicleImageModule\VehicleImageController.cs" />
-    <Compile Include="RentalModule\RentalController.cs" />
-    <Compile Include="PartnerModule\PartnerController.cs" />
-    <Compile Include="RentalServiceRelationshipModule\RentalServiceRelationshipController.cs" />
-    <Compile Include="ServiceModule\ServiceController.cs" />
-    <Compile Include="CustomersModule\CustomerController.cs" />
-    <Compile Include="VehicleGroupModule\VehicleGroupController.cs" />
-    <Compile Include="Shared\Controller.cs" />
-    <Compile Include="Shared\Db.cs" />
-    <Compile Include="VehicleModule\VehicleController.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
+    <ProjectReference Include="..\CarRental.Domain\CarRental.Domain.csproj" />
   </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\CarRental.Domain\CarRental.Domain.csproj">
-      <Project>{7f169e59-39e2-4908-be88-38206b8983f7}</Project>
-      <Name>CarRental.Domain</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+
 </Project>

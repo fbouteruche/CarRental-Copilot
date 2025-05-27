@@ -20,22 +20,22 @@ namespace CarRental.Controllers.Shared
 
         static Db()
         {
-            databaseName = ConfigurationManager.AppSettings["databaseName"];
+            databaseName = ConfigurationManager.AppSettings["databaseName"]!;
 
-            connectionString = ConfigurationManager.ConnectionStrings[databaseName].ConnectionString;
+            connectionString = ConfigurationManager.ConnectionStrings[databaseName]!.ConnectionString;
 
-            providerName = ConfigurationManager.ConnectionStrings[databaseName].ProviderName;
+            providerName = ConfigurationManager.ConnectionStrings[databaseName]!.ProviderName;
 
             providerFactory = DbProviderFactories.GetFactory(providerName);
         }
 
         public static int Insert(string sql, Dictionary<string, object> parameters)
         {
-            using (IDbConnection connection = providerFactory.CreateConnection())
+            using (IDbConnection connection = providerFactory.CreateConnection()!)
             {
                 connection.ConnectionString = connectionString;
 
-                using (IDbCommand command = providerFactory.CreateCommand())
+                using (IDbCommand command = providerFactory.CreateCommand()!)
                 {
                     command.CommandText = sql.AppendSelectIdentity();
                     command.Connection = connection;
@@ -50,13 +50,13 @@ namespace CarRental.Controllers.Shared
             }
         }
 
-        public static void Update(string sql, Dictionary<string, object> parameters = null)
+        public static void Update(string sql, Dictionary<string, object>? parameters = null)
         {
-            using (IDbConnection connection = providerFactory.CreateConnection())
+            using (IDbConnection connection = providerFactory.CreateConnection()!)
             {
                 connection.ConnectionString = connectionString;
 
-                using (IDbCommand command = providerFactory.CreateCommand())
+                using (IDbCommand command = providerFactory.CreateCommand()!)
                 {
                     command.CommandText = sql;
 
@@ -76,13 +76,13 @@ namespace CarRental.Controllers.Shared
             Update(sql, parameters);
         }
 
-        public static List<T> GetAll<T>(string sql, ConverterDelegate<T> convert, Dictionary<string, object> parameters = null)
+        public static List<T> GetAll<T>(string sql, ConverterDelegate<T> convert, Dictionary<string, object>? parameters = null)
         {
-            using (IDbConnection connection = providerFactory.CreateConnection())
+            using (IDbConnection connection = providerFactory.CreateConnection()!)
             {
                 connection.ConnectionString = connectionString;
 
-                using (IDbCommand command = providerFactory.CreateCommand())
+                using (IDbCommand command = providerFactory.CreateCommand()!)
                 {
                     command.CommandText = sql;
 
@@ -108,13 +108,13 @@ namespace CarRental.Controllers.Shared
             }
         }
 
-        public static T Get<T>(string sql, ConverterDelegate<T> convert, Dictionary<string, object> parameters)
+        public static T? Get<T>(string sql, ConverterDelegate<T> convert, Dictionary<string, object> parameters)
         {
-            using (IDbConnection connection = providerFactory.CreateConnection())
+            using (IDbConnection connection = providerFactory.CreateConnection()!)
             {
                 connection.ConnectionString = connectionString;
 
-                using (IDbCommand command = providerFactory.CreateCommand())
+                using (IDbCommand command = providerFactory.CreateCommand()!)
                 {
                     command.CommandText = sql;
 
@@ -124,7 +124,7 @@ namespace CarRental.Controllers.Shared
 
                     connection.Open();
 
-                    T t = default;
+                    T? t = default;
 
                     using (IDataReader reader = command.ExecuteReader())
                     {
@@ -139,11 +139,11 @@ namespace CarRental.Controllers.Shared
 
         public static bool Exists(string sql, Dictionary<string, object> parameters)
         {
-            using (IDbConnection connection = providerFactory.CreateConnection())
+            using (IDbConnection connection = providerFactory.CreateConnection()!)
             {
                 connection.ConnectionString = connectionString;
 
-                using (IDbCommand command = providerFactory.CreateCommand())
+                using (IDbCommand command = providerFactory.CreateCommand()!)
                 {
                     command.CommandText = sql;
 
@@ -160,7 +160,7 @@ namespace CarRental.Controllers.Shared
             }
         }
 
-        private static void SetParameters(this IDbCommand command, Dictionary<string, object> parameters)
+        private static void SetParameters(this IDbCommand command, Dictionary<string, object>? parameters)
         {
             if (parameters == null || parameters.Count == 0)
                 return;
@@ -192,7 +192,7 @@ namespace CarRental.Controllers.Shared
             }
         }
 
-        public static bool IsNullOrEmpty(this object value)
+        public static bool IsNullOrEmpty(this object? value)
         {
             return (value is string && string.IsNullOrEmpty((string)value)) ||
                     value == null;

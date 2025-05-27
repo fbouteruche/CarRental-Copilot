@@ -89,7 +89,7 @@ namespace CarRental.Controllers.VehicleImageModule
             return validationResult;
         }
 
-        public override VehicleImage SelectById(int id)
+        public override VehicleImage? SelectById(int id)
         {
             return Db.Get(selectByIdCommand, ConvertToVehicleImage, AddParameter("Id", id));
         }
@@ -110,18 +110,25 @@ namespace CarRental.Controllers.VehicleImageModule
 
         private Dictionary<string, object> GetImageParameters(VehicleImage vehicleImage)
         {
+            if (vehicleImage.Image == null)
+            {
+                throw new ArgumentException("Vehicle image cannot be null");
+            }
+            
             Bitmap bitmap = vehicleImage.Image;
-            MemoryStream memory = new MemoryStream();
-            bitmap.Save(memory, ImageFormat.Bmp);
-            byte[] imageBytes = memory.ToArray();
+            using (MemoryStream memory = new MemoryStream())
+            {
+                bitmap.Save(memory, ImageFormat.Bmp);
+                byte[] imageBytes = memory.ToArray();
 
-            var parameters = new Dictionary<string, object>();
+                var parameters = new Dictionary<string, object>();
 
-            parameters.Add("Id", vehicleImage.Id);
-            parameters.Add("VehicleId", vehicleImage.VehicleId);
-            parameters.Add("Image", imageBytes);
+                parameters.Add("Id", vehicleImage.Id);
+                parameters.Add("VehicleId", vehicleImage.VehicleId);
+                parameters.Add("Image", imageBytes);
 
-            return parameters;
+                return parameters;
+            }
         }
 
         private Bitmap ConvertToImage(IDataReader reader)
@@ -129,8 +136,11 @@ namespace CarRental.Controllers.VehicleImageModule
             byte[] bytes = (byte[])(reader["Image"]);
 
             TypeConverter typeConverter = TypeDescriptor.GetConverter(typeof(Bitmap));
-            Bitmap bitmap = (Bitmap)typeConverter.ConvertFrom(bytes);
+            Bitmap? bitmap = (Bitmap?)typeConverter.ConvertFrom(bytes);
 
+            if (bitmap == null)
+                throw new InvalidOperationException("Failed to convert byte array to Bitmap");
+                
             return bitmap;
         }
 
@@ -141,7 +151,11 @@ namespace CarRental.Controllers.VehicleImageModule
             var vehicleId = Convert.ToInt32(reader["VehicleId"]);
 
             TypeConverter typeConverter = TypeDescriptor.GetConverter(typeof(Bitmap));
-            Bitmap bitmap = (Bitmap)typeConverter.ConvertFrom(byteArray);
+            Bitmap? bitmap = (Bitmap?)typeConverter.ConvertFrom(byteArray);
+            
+            if (bitmap == null)
+                throw new InvalidOperationException("Failed to convert byte array to Bitmap");
+                
             Bitmap image = new Bitmap(bitmap);
 
             return new VehicleImage(id, vehicleId, image);

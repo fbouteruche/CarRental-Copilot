@@ -11,7 +11,7 @@ namespace CarRental.Controllers.Shared
         public abstract bool Delete(int id);
         public abstract List<T> SelectAll();
 
-        public abstract T SelectById(int id);
+        public abstract T? SelectById(int id);
 
         protected Dictionary<string, object> AddParameter(string field, object value)
         {
