@@ -8,13 +8,13 @@ namespace CarRental.Domain.VehicleModule
 {
     public class Vehicle : BaseEntity
     {
-        public string model;
-        public VehicleGroup vehicleGroup;
-        public string licensePlate;
-        public string chassis;
-        public string brand;
-        public string color;
-        public string fuelType;
+        public string model = "";
+        public VehicleGroup? vehicleGroup;
+        public string licensePlate = "";
+        public string chassis = "";
+        public string brand = "";
+        public string color = "";
+        public string fuelType = "";
         public double tankCapacity;
         public int year;
         public double mileage;
@@ -25,7 +25,9 @@ namespace CarRental.Domain.VehicleModule
         public bool hasPowerSteering;
         public bool hasAbsBrakes;
         public bool isRented;
-        public List<VehicleImage> images;
+        public List<VehicleImage>? images;
+
+        public Vehicle() { }
 
         public Vehicle(int id, string model, VehicleGroup vehicleGroup, string licensePlate, string chassis, string brand, string color, string fuelType, double tankCapacity, int year, double mileage, int numberOfDoors, int passengerCapacity, char trunkSize, bool hasAirConditioning, bool hasPowerSteering, bool hasAbsBrakes, bool isRented, List<VehicleImage> images)
         {
@@ -88,13 +90,13 @@ namespace CarRental.Domain.VehicleModule
             return $"[{id}, {model}, {vehicleGroup}, {licensePlate}]";
         }
 
-        public override bool Equals(object obj)
+        public override bool Equals(object? obj)
         {
             var vehicle = obj as Vehicle;
             return !(vehicle is null) &&
                    id == vehicle.id &&
                    model == vehicle.model &&
-                   EqualityComparer<VehicleGroup>.Default.Equals(vehicleGroup, vehicle.vehicleGroup) &&
+                   EqualityComparer<VehicleGroup?>.Default.Equals(vehicleGroup, vehicle.vehicleGroup) &&
                    licensePlate == vehicle.licensePlate &&
                    chassis == vehicle.chassis &&
                    brand == vehicle.brand &&
@@ -121,7 +123,7 @@ namespace CarRental.Domain.VehicleModule
             int hashCode = -1113965374;
             hashCode = hashCode * -1521134295 + id.GetHashCode();
             hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(model);
-            hashCode = hashCode * -1521134295 + EqualityComparer<VehicleGroup>.Default.GetHashCode(vehicleGroup);
+            hashCode = hashCode * -1521134295 + EqualityComparer<VehicleGroup?>.Default.GetHashCode(vehicleGroup);
             hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(licensePlate);
             hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(chassis);
             hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(brand);
@@ -137,7 +139,7 @@ namespace CarRental.Domain.VehicleModule
             hashCode = hashCode * -1521134295 + hasPowerSteering.GetHashCode();
             hashCode = hashCode * -1521134295 + hasAbsBrakes.GetHashCode();
             hashCode = hashCode * -1521134295 + isRented.GetHashCode();
-            hashCode = hashCode * -1521134295 + images.GetHashCode();
+            hashCode = hashCode * -1521134295 + (images != null ? images.GetHashCode() : 0);
             return hashCode;
         }
     }

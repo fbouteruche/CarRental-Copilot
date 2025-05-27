@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -88,7 +89,38 @@ namespace CarRental.Controllers.Shared
             }
 
             pdf.Save(fileName);
-            Process.Start(fileName);
+            
+            // Use platform-specific approach to open the file
+            OpenFile(fileName);
+        }
+        
+        private void OpenFile(string filePath)
+        {
+            try
+            {
+                if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+                {
+                    Process.Start(new ProcessStartInfo { FileName = filePath, UseShellExecute = true });
+                }
+                else if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
+                {
+                    Process.Start("xdg-open", filePath);
+                }
+                else if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
+                {
+                    Process.Start("open", filePath);
+                }
+                else
+                {
+                    // Fallback or throw an exception for unsupported OS
+                    throw new PlatformNotSupportedException("This platform is not supported for opening PDF files.");
+                }
+            }
+            catch (Exception ex)
+            {
+                // Handle the exception appropriately
+                Console.WriteLine($"Failed to open PDF file: {ex.Message}");
+            }
         }
     }
 }

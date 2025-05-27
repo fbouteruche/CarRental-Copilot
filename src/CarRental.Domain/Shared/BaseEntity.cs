@@ -9,7 +9,7 @@ namespace CarRental.Domain.Shared
 
         public abstract string Validate();
         public abstract override string ToString();
-        public abstract override bool Equals(object obj);
+        public abstract override bool Equals(object? obj);
         public abstract override int GetHashCode();
     }
 }
