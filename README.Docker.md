@@ -12,8 +12,14 @@ This project uses Docker to provide a consistent SQL Server environment for test
 1. Make sure Docker is running on your machine
 2. From the root of the project, run:
 
+**On Linux/macOS:**
 ```bash
 ./setup-docker-sqlserver.sh
+```
+
+**On Windows:**
+```powershell
+.\setup-docker-sqlserver.ps1
 ```
 
 This script will:
@@ -42,8 +48,15 @@ docker ps | grep carrental-sqlserver
 ```
 
 2. If the container is not running, start it:
+
+**On Linux/macOS:**
 ```bash
 ./setup-docker-sqlserver.sh
+```
+
+**On Windows:**
+```powershell
+.\setup-docker-sqlserver.ps1
 ```
 
 3. Check Docker logs for any issues:
