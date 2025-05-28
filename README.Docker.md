@@ -64,6 +64,18 @@ docker ps | grep carrental-sqlserver
 docker logs carrental-sqlserver
 ```
 
+4. If you see errors about missing tools (like sqlcmd), try rebuilding the image:
+```bash
+docker build --no-cache -t carrental-sqlserver -f Dockerfile.sqlserver .
+docker run -d --name carrental-sqlserver -p 1433:1433 carrental-sqlserver
+```
+
+5. View the container's detailed logs:
+```bash
+docker exec -it carrental-sqlserver ls -la /opt/mssql-tools/bin
+docker exec -it carrental-sqlserver bash -c 'echo $PATH'
+```
+
 ## Manual Database Access
 
 You can connect to the SQL Server instance using SQL Server Management Studio or other tools:

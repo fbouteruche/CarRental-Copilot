@@ -2,23 +2,50 @@ FROM mcr.microsoft.com/mssql/server:2019-latest
 
 USER root
 
+# Install SQL Server tools
+RUN apt-get update && \
+    apt-get install -y curl && \
+    curl https://packages.microsoft.com/keys/microsoft.asc | apt-key add - && \
+    curl https://packages.microsoft.com/config/ubuntu/20.04/prod.list > /etc/apt/sources.list.d/mssql-release.list && \
+    apt-get update && \
+    ACCEPT_EULA=Y apt-get install -y mssql-tools unixodbc-dev && \
+    echo 'export PATH="$PATH:/opt/mssql-tools/bin"' >> ~/.bashrc
+
 # Create app directory
 WORKDIR /usr/src/app
 
 # Copy initialization script
 COPY sql-scripts/init-db.sql /usr/src/app/init-db.sql
 
-# Grant permissions for the init script
-RUN chmod +x /usr/src/app/init-db.sql
+# Create a startup script
+RUN echo '#!/bin/bash \n\
+echo "Starting SQL Server..." \n\
+/opt/mssql/bin/sqlservr & \n\
+echo "Waiting for SQL Server to start..." \n\
+sleep 30 \n\
+echo "Checking if sqlcmd is available..." \n\
+if [ ! -f /opt/mssql-tools/bin/sqlcmd ]; then \n\
+    echo "ERROR: sqlcmd not found at /opt/mssql-tools/bin/sqlcmd" \n\
+    ls -la /opt/mssql-tools/bin/ \n\
+    exit 1 \n\
+fi \n\
+echo "Running initialization script..." \n\
+/opt/mssql-tools/bin/sqlcmd -S localhost -U sa -P CarRental#123 -i /usr/src/app/init-db.sql \n\
+echo "Database initialization complete." \n\
+tail -f /dev/null' > /usr/src/app/start.sh
+
+# Grant permissions for scripts
+RUN chmod +x /usr/src/app/init-db.sql /usr/src/app/start.sh
 
 # Set environment variables
 ENV SA_PASSWORD=CarRental#123
 ENV ACCEPT_EULA=Y
 ENV MSSQL_PID=Express
+ENV PATH="$PATH:/opt/mssql-tools/bin"
 
 # Expose SQL Server port
 EXPOSE 1433
 
 # Run SQL Server and initialize the database
 USER mssql
-CMD /bin/bash -c "(/opt/mssql/bin/sqlservr &) && sleep 30 && /opt/mssql-tools/bin/sqlcmd -S localhost -U sa -P CarRental#123 -i /usr/src/app/init-db.sql && tail -f /dev/null"
+CMD /bin/bash /usr/src/app/start.sh

@@ -15,6 +15,6 @@ docker run -d --name carrental-sqlserver -p 1433:1433 carrental-sqlserver
 
 # Wait for SQL Server to be ready
 Write-Host "Waiting for SQL Server to start..."
-Start-Sleep -Seconds 15
+Start-Sleep -Seconds 45
 
 Write-Host "SQL Server container is now running with the CarRental database initialized."
