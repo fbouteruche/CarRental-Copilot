@@ -1,0 +1,30 @@
+﻿@inherits LayoutComponentBase
+
+<div class="page">
+    <div class="sidebar">
+        <NavMenu />
+    </div>
+
+    <main>
+        <div class="top-row px-4">
+            <span>Car Rental Management System</span>
+            <a href="https://github.com/fbouteruche/CarRental-Copilot" target="_blank">GitHub Repo</a>
+        </div>
+
+        <article class="content px-4">
+            @Body
+        </article>
+        
+        <footer class="footer text-center py-3 mt-5 border-top">
+            <div class="container">
+                <span class="text-muted">© @DateTime.Now.Year Car Rental System - Built with .NET 8 and Blazor</span>
+            </div>
+        </footer>
+    </main>
+</div>
+
+<div id="blazor-error-ui">
+    An unhandled error has occurred.
+    <a href="" class="reload">Reload</a>
+    <a class="dismiss">🗙</a>
+</div>

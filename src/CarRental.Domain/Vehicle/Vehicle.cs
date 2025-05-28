@@ -8,75 +8,77 @@ namespace CarRental.Domain.VehicleModule
 {
     public class Vehicle : BaseEntity
     {
-        public string model;
-        public VehicleGroup vehicleGroup;
-        public string licensePlate;
-        public string chassis;
-        public string brand;
-        public string color;
-        public string fuelType;
-        public double tankCapacity;
-        public int year;
-        public double mileage;
-        public int numberOfDoors;
-        public int passengerCapacity;
-        public char trunkSize;
-        public bool hasAirConditioning;
-        public bool hasPowerSteering;
-        public bool hasAbsBrakes;
-        public bool isRented;
-        public List<VehicleImage> images;
+        public string Model { get; set; } = string.Empty;
+        public VehicleGroup? VehicleGroup { get; set; }
+        public string LicensePlate { get; set; } = string.Empty;
+        public string Chassis { get; set; } = string.Empty;
+        public string Brand { get; set; } = string.Empty;
+        public string Color { get; set; } = string.Empty;
+        public string FuelType { get; set; } = string.Empty;
+        public double TankCapacity { get; set; }
+        public int Year { get; set; }
+        public double Mileage { get; set; }
+        public int NumberOfDoors { get; set; }
+        public int PassengerCapacity { get; set; }
+        public char TrunkSize { get; set; }
+        public bool HasAirConditioning { get; set; }
+        public bool HasPowerSteering { get; set; }
+        public bool HasAbsBrakes { get; set; }
+        public bool IsRented { get; set; }
+        public List<VehicleImage>? Images { get; set; }
 
-        public Vehicle(int id, string model, VehicleGroup vehicleGroup, string licensePlate, string chassis, string brand, string color, string fuelType, double tankCapacity, int year, double mileage, int numberOfDoors, int passengerCapacity, char trunkSize, bool hasAirConditioning, bool hasPowerSteering, bool hasAbsBrakes, bool isRented, List<VehicleImage> images)
+        public Vehicle() { }
+
+        public Vehicle(int id, string? model, VehicleGroup vehicleGroup, string? licensePlate, string? chassis, string? brand, string? color, string? fuelType, double tankCapacity, int year, double mileage, int numberOfDoors, int passengerCapacity, char trunkSize, bool hasAirConditioning, bool hasPowerSteering, bool hasAbsBrakes, bool isRented, List<VehicleImage>? images)
         {
             this.id = id;
-            this.model = model;
-            this.vehicleGroup = vehicleGroup;
-            this.licensePlate = licensePlate;
-            this.chassis = chassis;
-            this.brand = brand;
-            this.color = color;
-            this.fuelType = fuelType;
-            this.tankCapacity = tankCapacity;
-            this.year = year;
-            this.mileage = mileage;
-            this.numberOfDoors = numberOfDoors;
-            this.passengerCapacity = passengerCapacity;
-            this.trunkSize = trunkSize;
-            this.hasAirConditioning = hasAirConditioning;
-            this.hasPowerSteering = hasPowerSteering;
-            this.hasAbsBrakes = hasAbsBrakes;
-            this.isRented = isRented;
-            this.images = images;
+            this.Model = model ?? string.Empty;
+            this.VehicleGroup = vehicleGroup;
+            this.LicensePlate = licensePlate ?? string.Empty;
+            this.Chassis = chassis ?? string.Empty;
+            this.Brand = brand ?? string.Empty;
+            this.Color = color ?? string.Empty;
+            this.FuelType = fuelType ?? string.Empty;
+            this.TankCapacity = tankCapacity;
+            this.Year = year;
+            this.Mileage = mileage;
+            this.NumberOfDoors = numberOfDoors;
+            this.PassengerCapacity = passengerCapacity;
+            this.TrunkSize = trunkSize;
+            this.HasAirConditioning = hasAirConditioning;
+            this.HasPowerSteering = hasPowerSteering;
+            this.HasAbsBrakes = hasAbsBrakes;
+            this.IsRented = isRented;
+            this.Images = images;
         }
 
         public override string Validate()
         {
             string validationResult = "";
 
-            if (this.model.Length == 0)
+            if (this.Model.Length == 0)
                 validationResult = "The field 'model' cannot be empty!\n";
-            if (this.licensePlate.Length == 0)
+            if (this.LicensePlate.Length == 0)
                 validationResult += "The field 'licensePlate' cannot be empty!\n";
-            if (this.chassis.Length == 0)
+            if (this.Chassis.Length == 0)
                 validationResult += "The field 'chassis' cannot be empty!\n";
-            if (this.brand.Length == 0)
+            if (this.Brand.Length == 0)
                 validationResult += "The field 'brand' cannot be empty!\n";
-            if (this.color.Length == 0)
+            if (this.Color.Length == 0)
                 validationResult += "The field 'color' cannot be empty!\n";
-            if (this.fuelType.Length == 0)
+            if (this.FuelType.Length == 0)
                 validationResult += "The field 'fuelType' cannot be empty!\n";
-            if (this.tankCapacity == 0)
+            if (this.TankCapacity == 0)
                 validationResult += "The field 'tankCapacity' cannot be empty!\n";
-            if (this.year <= 0)
+            if (this.Year <= 0)
                 validationResult += "The field 'year' cannot be empty!\n";
-            if (this.mileage <= 0)
+            if (this.Mileage <= 0)
                 validationResult += "The field 'mileage' cannot be empty!\n";
-            if (this.numberOfDoors <= 0)
+            if (this.NumberOfDoors <= 0)
                 validationResult += "The field 'numberOfDoors' cannot be empty!\n";
-            if (this.passengerCapacity <= 0)
+            if (this.PassengerCapacity <= 0)
                 validationResult += "The field 'passengerCapacity' cannot be empty!\n";
-            if (this.trunkSize != 'S' && this.trunkSize != 'M' && this.trunkSize != 'L')
+            if (this.TrunkSize != 'S' && this.TrunkSize != 'M' && this.TrunkSize != 'L')
                 validationResult += "The field 'trunkSize' must be 'S', 'M', or 'L'!\n";
             if (validationResult == "")
                 validationResult = "VALID";
@@ -85,31 +87,31 @@ namespace CarRental.Domain.VehicleModule
 
         public override string ToString()
         {
-            return $"[{id}, {model}, {vehicleGroup}, {licensePlate}]";
+            return $"[{id}, {Model}, {VehicleGroup}, {LicensePlate}]";
         }
 
-        public override bool Equals(object obj)
+        public override bool Equals(object? obj)
         {
             var vehicle = obj as Vehicle;
-            return !(vehicle is null) &&
+            return vehicle != null &&
                    id == vehicle.id &&
-                   model == vehicle.model &&
-                   EqualityComparer<VehicleGroup>.Default.Equals(vehicleGroup, vehicle.vehicleGroup) &&
-                   licensePlate == vehicle.licensePlate &&
-                   chassis == vehicle.chassis &&
-                   brand == vehicle.brand &&
-                   color == vehicle.color &&
-                   fuelType == vehicle.fuelType &&
-                   tankCapacity == vehicle.tankCapacity &&
-                   year == vehicle.year &&
-                   mileage == vehicle.mileage &&
-                   numberOfDoors == vehicle.numberOfDoors &&
-                   passengerCapacity == vehicle.passengerCapacity &&
-                   trunkSize == vehicle.trunkSize &&
-                   hasAirConditioning == vehicle.hasAirConditioning &&
-                   hasPowerSteering == vehicle.hasPowerSteering &&
-                   hasAbsBrakes == vehicle.hasAbsBrakes &&
-                   isRented == vehicle.isRented
+                   Model == vehicle.Model &&
+                   EqualityComparer<VehicleGroup?>.Default.Equals(VehicleGroup, vehicle.VehicleGroup) &&
+                   LicensePlate == vehicle.LicensePlate &&
+                   Chassis == vehicle.Chassis &&
+                   Brand == vehicle.Brand &&
+                   Color == vehicle.Color &&
+                   FuelType == vehicle.FuelType &&
+                   TankCapacity == vehicle.TankCapacity &&
+                   Year == vehicle.Year &&
+                   Mileage == vehicle.Mileage &&
+                   NumberOfDoors == vehicle.NumberOfDoors &&
+                   PassengerCapacity == vehicle.PassengerCapacity &&
+                   TrunkSize == vehicle.TrunkSize &&
+                   HasAirConditioning == vehicle.HasAirConditioning &&
+                   HasPowerSteering == vehicle.HasPowerSteering &&
+                   HasAbsBrakes == vehicle.HasAbsBrakes &&
+                   IsRented == vehicle.IsRented
                    //TODO
                    //implemet deep Equals over the image collection &&
                    //(images == vehicle.images || (images.Count == 0 && vehicle.images == null) || (images.Count == 0 && vehicle.images.Count == 0))
@@ -120,24 +122,24 @@ namespace CarRental.Domain.VehicleModule
         {
             int hashCode = -1113965374;
             hashCode = hashCode * -1521134295 + id.GetHashCode();
-            hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(model);
-            hashCode = hashCode * -1521134295 + EqualityComparer<VehicleGroup>.Default.GetHashCode(vehicleGroup);
-            hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(licensePlate);
-            hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(chassis);
-            hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(brand);
-            hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(color);
-            hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(fuelType);
-            hashCode = hashCode * -1521134295 + tankCapacity.GetHashCode();
-            hashCode = hashCode * -1521134295 + year.GetHashCode();
-            hashCode = hashCode * -1521134295 + mileage.GetHashCode();
-            hashCode = hashCode * -1521134295 + numberOfDoors.GetHashCode();
-            hashCode = hashCode * -1521134295 + passengerCapacity.GetHashCode();
-            hashCode = hashCode * -1521134295 + trunkSize.GetHashCode();
-            hashCode = hashCode * -1521134295 + hasAirConditioning.GetHashCode();
-            hashCode = hashCode * -1521134295 + hasPowerSteering.GetHashCode();
-            hashCode = hashCode * -1521134295 + hasAbsBrakes.GetHashCode();
-            hashCode = hashCode * -1521134295 + isRented.GetHashCode();
-            hashCode = hashCode * -1521134295 + images.GetHashCode();
+            hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(Model);
+            hashCode = hashCode * -1521134295 + (VehicleGroup != null ? EqualityComparer<VehicleGroup>.Default.GetHashCode(VehicleGroup) : 0);
+            hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(LicensePlate);
+            hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(Chassis);
+            hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(Brand);
+            hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(Color);
+            hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(FuelType);
+            hashCode = hashCode * -1521134295 + TankCapacity.GetHashCode();
+            hashCode = hashCode * -1521134295 + Year.GetHashCode();
+            hashCode = hashCode * -1521134295 + Mileage.GetHashCode();
+            hashCode = hashCode * -1521134295 + NumberOfDoors.GetHashCode();
+            hashCode = hashCode * -1521134295 + PassengerCapacity.GetHashCode();
+            hashCode = hashCode * -1521134295 + TrunkSize.GetHashCode();
+            hashCode = hashCode * -1521134295 + HasAirConditioning.GetHashCode();
+            hashCode = hashCode * -1521134295 + HasPowerSteering.GetHashCode();
+            hashCode = hashCode * -1521134295 + HasAbsBrakes.GetHashCode();
+            hashCode = hashCode * -1521134295 + IsRented.GetHashCode();
+            hashCode = hashCode * -1521134295 + (Images != null ? Images.GetHashCode() : 0);
             return hashCode;
         }
     }

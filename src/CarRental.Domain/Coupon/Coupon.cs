@@ -18,11 +18,11 @@ namespace CarRental.Domain.CouponModule
         public DateTime ExpirationDate { get; }
         public Partner Partner { get; }
 
-        public Coupon(int id, string name, string code, double value, double minimumValue, bool isFixedDiscount, DateTime expirationDate, Partner partner)
+        public Coupon(int id, string? name, string? code, double value, double minimumValue, bool isFixedDiscount, DateTime expirationDate, Partner partner)
         {
             Id = id;
-            Name = name;
-            Code = code;
+            Name = name ?? string.Empty;
+            Code = code ?? string.Empty;
             Value = value;
             MinimumValue = minimumValue;
             IsFixedDiscount = isFixedDiscount;
@@ -52,7 +52,7 @@ namespace CarRental.Domain.CouponModule
             return $"[{id}, {Name}, {Code}, {IsFixedDiscount}, {Value}]";
         }
 
-        public override bool Equals(object obj)
+        public override bool Equals(object? obj)
         {
             return obj is Coupon comparedCoupon &&
                    Id == comparedCoupon.Id &&

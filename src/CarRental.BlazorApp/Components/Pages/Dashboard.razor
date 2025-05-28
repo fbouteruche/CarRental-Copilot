@@ -1,0 +1,165 @@
+@page "/dashboard"
+@using CarRental.Controllers.CustomersModule
+@using CarRental.Controllers.VehicleModule
+@using CarRental.Controllers.RentalModule
+@using CarRental.Controllers.ServiceModule
+@using CarRental.Controllers.EmployeeModule
+@using CarRental.Controllers.CouponModule
+
+<PageTitle>Dashboard - Car Rental System</PageTitle>
+
+<h1>Dashboard</h1>
+
+<div class="row mb-4">
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header bg-primary text-white">
+                <h5>Vehicles</h5>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <div class="card bg-light">
+                            <div class="card-body text-center">
+                                <h3>@totalVehicles</h3>
+                                <p>Total Vehicles</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <div class="card bg-light">
+                            <div class="card-body text-center">
+                                <h3>@availableVehicles</h3>
+                                <p>Available Vehicles</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header bg-success text-white">
+                <h5>Customers</h5>
+            </div>
+            <div class="card-body">
+                <div class="card bg-light">
+                    <div class="card-body text-center">
+                        <h3>@totalCustomers</h3>
+                        <p>Registered Customers</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row mb-4">
+    <div class="col-md-12">
+        <div class="card">
+            <div class="card-header bg-danger text-white">
+                <h5>Rentals</h5>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-4 mb-3">
+                        <div class="card bg-light">
+                            <div class="card-body text-center">
+                                <h3>@activeRentals</h3>
+                                <p>Active Rentals</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        <div class="card bg-light">
+                            <div class="card-body text-center">
+                                <h3>@returnsToday</h3>
+                                <p>Returns Today</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        <div class="card bg-light">
+                            <div class="card-body text-center">
+                                <h3>@returnsIn7Days</h3>
+                                <p>Returns in 7 Days</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@code {
+    [Inject]
+    private CustomerController CustomerController { get; set; } = default!;
+
+    [Inject]
+    private VehicleController VehicleController { get; set; } = default!;
+    
+    [Inject]
+    private EmployeeController EmployeeController { get; set; } = default!;
+    
+    [Inject]
+    private ServiceController ServiceController { get; set; } = default!;
+    
+    [Inject]
+    private CouponController CouponController { get; set; } = default!;
+    
+    [Inject]
+    private RentalController RentalController { get; set; } = default!;
+
+    private int totalVehicles = 0;
+    private int availableVehicles = 0;
+    private int totalCustomers = 0;
+    private int activeRentals = 0;
+    private int returnsToday = 0;
+    private int returnsIn7Days = 0;
+
+    protected override void OnInitialized()
+    {
+        LoadDashboard();
+    }
+
+    private void LoadDashboard()
+    {
+        // Load vehicles data
+        var allVehicles = VehicleController.SelectAll();
+        totalVehicles = allVehicles.Count;
+        availableVehicles = allVehicles.Count(v => !v.IsRented);
+
+        // Load customers data
+        var allCustomers = CustomerController.SelectAll();
+        totalCustomers = allCustomers.Count;
+
+        // Load rental data
+        LoadRentalDashboard();
+    }
+
+    private void LoadRentalDashboard()
+    {
+        var allRentals = RentalController.SelectAll();
+        activeRentals = allRentals.Count(r => r.IsOpen);
+
+        returnsToday = 0;
+        returnsIn7Days = 0;
+
+        foreach (var rental in allRentals)
+        {
+            if (rental.IsOpen)
+            {
+                if (rental.ReturnDate.Date == DateTime.Today)
+                {
+                    returnsToday++;
+                }
+                else if (rental.ReturnDate.Date <= DateTime.Today.AddDays(7))
+                {
+                    returnsIn7Days++;
+                }
+            }
+        }
+    }
+}

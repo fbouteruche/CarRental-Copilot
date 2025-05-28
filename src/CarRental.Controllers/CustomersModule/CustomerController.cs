@@ -120,7 +120,7 @@ namespace CarRental.Controllers.CustomersModule
             return validationResult;
         }
 
-        public override Customer SelectById(int id)
+        public override Customer? SelectById(int id)
         {
             return Db.Get(sqlSelectCustomerById, ConvertToCustomer, AddParameter("Id", id));
         }
@@ -134,12 +134,12 @@ namespace CarRental.Controllers.CustomersModule
         {
             DateTime? driverLicenseValidity = null;
             int id = Convert.ToInt32(reader["Id"]);
-            string name = Convert.ToString(reader["Name"]);
-            string uniqueRegister = Convert.ToString(reader["UniqueRegister"]);
-            string address = Convert.ToString(reader["Address"]);
-            string phone = Convert.ToString(reader["Phone"]);
-            string email = Convert.ToString(reader["Email"]);
-            string driverLicense = Convert.ToString(reader["DriverLicense"]);
+            string? name = reader["Name"] != DBNull.Value ? Convert.ToString(reader["Name"]) : string.Empty;
+            string? uniqueRegister = reader["UniqueRegister"] != DBNull.Value ? Convert.ToString(reader["UniqueRegister"]) : string.Empty;
+            string? address = reader["Address"] != DBNull.Value ? Convert.ToString(reader["Address"]) : string.Empty;
+            string? phone = reader["Phone"] != DBNull.Value ? Convert.ToString(reader["Phone"]) : string.Empty;
+            string? email = reader["Email"] != DBNull.Value ? Convert.ToString(reader["Email"]) : string.Empty;
+            string? driverLicense = reader["DriverLicense"] != DBNull.Value ? Convert.ToString(reader["DriverLicense"]) : string.Empty;
             if(reader["DriverLicenseValidity"] != DBNull.Value)
                 driverLicenseValidity = Convert.ToDateTime(reader["DriverLicenseValidity"]);
             bool isIndividual = Convert.ToBoolean(reader["IsIndividual"]);
@@ -160,7 +160,7 @@ namespace CarRental.Controllers.CustomersModule
             parameters.Add("Phone", customer.Phone);
             parameters.Add("Email", customer.Email);
             parameters.Add("DriverLicense", customer.DriverLicense);
-            parameters.Add("DriverLicenseValidity", customer.LicenseExpiryDate);
+            parameters.Add("DriverLicenseValidity", customer.LicenseExpiryDate.HasValue ? (object)customer.LicenseExpiryDate.Value : DBNull.Value);
             parameters.Add("IsIndividual", customer.IsPhysicalPerson);
 
             return parameters;

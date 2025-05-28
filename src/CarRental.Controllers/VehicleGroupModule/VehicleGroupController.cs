@@ -117,7 +117,7 @@ namespace CarRental.Controllers.VehicleGroupModule
             return Db.Exists(sqlVehicleGroupExists, AddParameter("Id", id));
         }
 
-        public override VehicleGroup SelectById(int id)
+        public override VehicleGroup? SelectById(int id)
         {
             return Db.Get(sqlSelectVehicleGroupById, ConvertToVehicleGroup, AddParameter("Id", id));
         }
@@ -146,7 +146,7 @@ namespace CarRental.Controllers.VehicleGroupModule
         private VehicleGroup ConvertToVehicleGroup(IDataReader reader)
         {
             int id = Convert.ToInt32(reader["Id"]);
-            string name = Convert.ToString(reader["Name"]);
+            string? name = reader["Name"] != DBNull.Value ? Convert.ToString(reader["Name"]) : string.Empty;
             double dailyPlanRate = Convert.ToDouble(reader["DailyPlanRate"]);
             double dailyPerKmRate = Convert.ToDouble(reader["DailyKmRate"]);
             double controlledPlanRate = Convert.ToDouble(reader["ControlledPlanRate"]);

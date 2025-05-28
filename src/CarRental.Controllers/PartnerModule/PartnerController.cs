@@ -76,7 +76,7 @@ namespace CarRental.Controllers.PartnerModule
             return Db.GetAll(sqlSelectAllPartners, ConvertToPartner);
         }       
 
-        public override Partner SelectById(int id)
+        public override Partner? SelectById(int id)
         {
             return Db.Get(sqlSelectPartnerById, ConvertToPartner, AddParameter("Id", id));
         }        
@@ -124,7 +124,7 @@ namespace CarRental.Controllers.PartnerModule
         private Partner ConvertToPartner(IDataReader reader)
         {
             int id = Convert.ToInt32(reader["Id"]);
-            string name = Convert.ToString(reader["PartnerName"]);
+            string? name = reader["PartnerName"] != DBNull.Value ? Convert.ToString(reader["PartnerName"]) : null;
 
             Partner partner = new Partner(id, name);
 
