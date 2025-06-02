@@ -44,7 +44,7 @@ namespace CarRental.Tests.Shared
                     Thread.Sleep(30000); // Wait 30 seconds for SQL Server to initialize
                     
                     // Run the initialization script inside the container
-                    RunProcess("docker", "exec carrental-sqlserver /opt/mssql-tools18/bin/sqlcmd -S localhost -U sa -P \"CarRental#123\" -C -i /scripts/init-db.sql");
+                    RunProcess("docker", "exec carrental-sqlserver /opt/mssql-tools18/bin/sqlcmd -S localhost -U sa -P \"CarRental#123\" -C -i /usr/src/app/init-db.sql");
                     
                     Console.WriteLine("Docker SQL Server container is now running and initialized.");
                     _containerStarted = true;
@@ -62,7 +62,7 @@ namespace CarRental.Tests.Shared
         /// </summary>
         public static void UpdateConnectionString()
         {
-            var dockerConnectionString = "Data Source=localhost,1433;Initial Catalog=CarRental;User Id=sa;******;TrustServerCertificate=True;";
+            var dockerConnectionString = "Data Source=localhost,1433;Initial Catalog=CarRental;User Id=sa;Password=CarRental#123;TrustServerCertificate=True;";
             Environment.SetEnvironmentVariable("CarRental_ConnectionString", dockerConnectionString);
             
             // Also update the app.config
@@ -76,22 +76,43 @@ namespace CarRental.Tests.Shared
         {
             try
             {
+                // Update the source App.config
                 var configFile = Path.Combine(GetSolutionDirectory(), "src", "CarRental.Tests", "App.config");
-                string configContent = File.ReadAllText(configFile);
+                UpdateConfigFile(configFile, connectionString);
                 
-                // Replace the connection string in config
-                var updatedContent = System.Text.RegularExpressions.Regex.Replace(
-                    configContent,
-                    @"<add name=""SqlServer""[^>]*connectionString=""[^""]*""",
-                    $"<add name=\"SqlServer\" providerName=\"System.Data.SqlClient\" connectionString=\"{connectionString}\"");
+                // Also update the runtime App.config in the bin directory if it exists
+                var runtimeConfigFile = Path.Combine(GetSolutionDirectory(), "src", "CarRental.Tests", "bin", "Debug", "net8.0", "App.config");
+                if (File.Exists(runtimeConfigFile))
+                {
+                    UpdateConfigFile(runtimeConfigFile, connectionString);
+                }
                 
-                File.WriteAllText(configFile, updatedContent);
+                // Update the dll.config file as well
+                var dllConfigFile = Path.Combine(GetSolutionDirectory(), "src", "CarRental.Tests", "bin", "Debug", "net8.0", "CarRental.Tests.dll.config");
+                if (File.Exists(dllConfigFile))
+                {
+                    UpdateConfigFile(dllConfigFile, connectionString);
+                }
+                
                 Console.WriteLine("Updated App.config with Docker connection string");
             }
             catch (Exception ex)
             {
                 Console.WriteLine($"Error updating App.config: {ex.Message}");
             }
+        }
+        
+        private static void UpdateConfigFile(string configFile, string connectionString)
+        {
+            string configContent = File.ReadAllText(configFile);
+            
+            // Replace the connection string in config
+            var updatedContent = System.Text.RegularExpressions.Regex.Replace(
+                configContent,
+                @"<add name=""SqlServer""[^>]*connectionString=""[^""]*""",
+                $"<add name=\"SqlServer\" providerName=\"System.Data.SqlClient\" connectionString=\"{connectionString}\"");
+            
+            File.WriteAllText(configFile, updatedContent);
         }
 
         /// <summary>
