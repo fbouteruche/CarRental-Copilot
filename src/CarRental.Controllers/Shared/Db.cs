@@ -14,19 +14,50 @@ namespace CarRental.Controllers.Shared
     public static class Db
     {
         private static readonly string databaseName;
-        private static readonly string connectionString = "";
+        private static readonly string connectionString;
         private static readonly string providerName;
         private static readonly DbProviderFactory providerFactory;
 
         static Db()
         {
-            databaseName = ConfigurationManager.AppSettings["databaseName"]!;
+            var databaseNameConfig = ConfigurationManager.AppSettings["databaseName"];
+            if (string.IsNullOrEmpty(databaseNameConfig))
+            {
+                throw new InvalidOperationException(
+                    "Database name not configured. Please ensure 'databaseName' is set in appSettings in your App.config file.");
+            }
+            databaseName = databaseNameConfig;
 
-            connectionString = ConfigurationManager.ConnectionStrings[databaseName]!.ConnectionString;
+            var connectionStringConfig = ConfigurationManager.ConnectionStrings[databaseName];
+            if (connectionStringConfig == null)
+            {
+                throw new InvalidOperationException(
+                    $"Connection string '{databaseName}' not found in configuration. Please ensure the connection string is properly configured in your App.config file.");
+            }
 
-            providerName = ConfigurationManager.ConnectionStrings[databaseName]!.ProviderName;
+            connectionString = connectionStringConfig.ConnectionString;
+            if (string.IsNullOrEmpty(connectionString))
+            {
+                throw new InvalidOperationException(
+                    $"Connection string '{databaseName}' is empty. Please ensure the connection string value is properly set in your App.config file.");
+            }
 
-            providerFactory = DbProviderFactories.GetFactory(providerName);
+            providerName = connectionStringConfig.ProviderName;
+            if (string.IsNullOrEmpty(providerName))
+            {
+                throw new InvalidOperationException(
+                    $"Provider name for connection string '{databaseName}' is not specified. Please ensure the providerName attribute is set in your App.config file.");
+            }
+
+            try
+            {
+                providerFactory = DbProviderFactories.GetFactory(providerName);
+            }
+            catch (Exception ex)
+            {
+                throw new InvalidOperationException(
+                    $"Failed to create database provider factory for provider '{providerName}'. Please ensure the provider is properly installed and configured.", ex);
+            }
         }
 
         public static int Insert(string sql, Dictionary<string, object> parameters)
