@@ -29,7 +29,7 @@ namespace CarRental.Tests.Shared
 
 services:
   sqlserver:
-    image: mcr.microsoft.com/mssql/server:2019-latest
+    image: mcr.microsoft.com/mssql/server:2022-latest
     container_name: carrental-sqlserver
     environment:
       - ACCEPT_EULA=Y
@@ -40,7 +40,7 @@ services:
     volumes:
       - sqlserver-data:/var/opt/mssql
     healthcheck:
-      test: /opt/mssql-tools/bin/sqlcmd -S localhost -U sa -P ""CarRental#123"" -Q ""SELECT 1"" || exit 1
+      test: /opt/mssql-tools18/bin/sqlcmd -S localhost -U sa -P ""CarRental#123"" -C -Q ""SELECT 1"" || exit 1
       interval: 10s
       timeout: 5s
       retries: 5

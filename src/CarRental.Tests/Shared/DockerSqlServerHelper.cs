@@ -44,7 +44,7 @@ namespace CarRental.Tests.Shared
                     Thread.Sleep(30000); // Wait 30 seconds for SQL Server to initialize
                     
                     // Run the initialization script inside the container
-                    RunProcess("docker", "exec carrental-sqlserver /opt/mssql-tools/bin/sqlcmd -S localhost -U sa -P \"CarRental#123\" -i /scripts/init-db.sql");
+                    RunProcess("docker", "exec carrental-sqlserver /opt/mssql-tools18/bin/sqlcmd -S localhost -U sa -P \"CarRental#123\" -C -i /scripts/init-db.sql");
                     
                     Console.WriteLine("Docker SQL Server container is now running and initialized.");
                     _containerStarted = true;

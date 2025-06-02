@@ -1,15 +1,20 @@
-FROM mcr.microsoft.com/mssql/server:2019-latest
+FROM mcr.microsoft.com/mssql/server:2022-latest
 
 USER root
 
-# Install SQL Server tools
+# Install SQL Server tools directly from Microsoft
 RUN apt-get update && \
-    apt-get install -y curl && \
-    curl https://packages.microsoft.com/keys/microsoft.asc | apt-key add - && \
-    curl https://packages.microsoft.com/config/ubuntu/20.04/prod.list > /etc/apt/sources.list.d/mssql-release.list && \
-    apt-get update && \
-    ACCEPT_EULA=Y apt-get install -y mssql-tools unixodbc-dev && \
-    echo 'export PATH="$PATH:/opt/mssql-tools/bin"' >> ~/.bashrc
+    apt-get install -y wget ca-certificates && \
+    # Download and install SQL Server tools using direct package download
+    wget -q https://packages.microsoft.com/ubuntu/22.04/prod/pool/main/m/mssql-tools18/mssql-tools18_18.1.1.1-1_amd64.deb && \
+    wget -q https://packages.microsoft.com/ubuntu/22.04/prod/pool/main/u/unixodbc-dev/unixodbc-dev_2.3.7-2ubuntu2_amd64.deb && \
+    wget -q https://packages.microsoft.com/ubuntu/22.04/prod/pool/main/u/unixodbc/unixodbc_2.3.7-2ubuntu2_amd64.deb && \
+    ACCEPT_EULA=Y dpkg -i --force-depends *.deb || true && \
+    apt-get install -f -y && \
+    echo 'export PATH="$PATH:/opt/mssql-tools18/bin"' >> ~/.bashrc && \
+    rm -f *.deb && \
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/*
 
 # Create app directory
 WORKDIR /usr/src/app
@@ -24,13 +29,13 @@ echo "Starting SQL Server..." \n\
 echo "Waiting for SQL Server to start..." \n\
 sleep 30 \n\
 echo "Checking if sqlcmd is available..." \n\
-if [ ! -f /opt/mssql-tools/bin/sqlcmd ]; then \n\
-    echo "ERROR: sqlcmd not found at /opt/mssql-tools/bin/sqlcmd" \n\
-    ls -la /opt/mssql-tools/bin/ \n\
+if [ ! -f /opt/mssql-tools18/bin/sqlcmd ]; then \n\
+    echo "ERROR: sqlcmd not found at /opt/mssql-tools18/bin/sqlcmd" \n\
+    ls -la /opt/mssql-tools18/bin/ || echo "Directory does not exist" \n\
     exit 1 \n\
 fi \n\
 echo "Running initialization script..." \n\
-/opt/mssql-tools/bin/sqlcmd -S localhost -U sa -P CarRental#123 -i /usr/src/app/init-db.sql \n\
+/opt/mssql-tools18/bin/sqlcmd -S localhost -U sa -P CarRental#123 -C -i /usr/src/app/init-db.sql \n\
 echo "Database initialization complete." \n\
 tail -f /dev/null' > /usr/src/app/start.sh
 
@@ -41,7 +46,7 @@ RUN chmod +x /usr/src/app/init-db.sql /usr/src/app/start.sh
 ENV SA_PASSWORD=CarRental#123
 ENV ACCEPT_EULA=Y
 ENV MSSQL_PID=Express
-ENV PATH="$PATH:/opt/mssql-tools/bin"
+ENV PATH="$PATH:/opt/mssql-tools18/bin"
 
 # Expose SQL Server port
 EXPOSE 1433
