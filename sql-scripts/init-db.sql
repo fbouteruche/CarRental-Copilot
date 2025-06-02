@@ -99,6 +99,12 @@ BEGIN
     CREATE TABLE [dbo].[Vehicle_Group](
         [Id] [int] IDENTITY(1,1) NOT NULL,
         [Name] [nvarchar](255) NULL,
+        [DailyPlanRate] [decimal](18, 2) NULL,
+        [DailyKmRate] [decimal](18, 2) NULL,
+        [ControlledPlanRate] [decimal](18, 2) NULL,
+        [ControlledKmLimit] [int] NULL,
+        [ControlledExceededKmRate] [decimal](18, 2) NULL,
+        [FreePlanRate] [decimal](18, 2) NULL,
         PRIMARY KEY CLUSTERED ([Id] ASC)
     );
 END
