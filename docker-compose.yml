@@ -4,11 +4,12 @@ services:
       context: .
       dockerfile: Dockerfile.sqlserver
     container_name: carrental-sqlserver
-    network_mode: host
     environment:
       - ACCEPT_EULA=Y
       - SA_PASSWORD=CarRental#123
       - MSSQL_PID=Express
+    ports:
+      - "1433:1433"
     volumes:
       - sqlserver-data:/var/opt/mssql
     healthcheck:
