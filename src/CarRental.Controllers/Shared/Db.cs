@@ -44,7 +44,7 @@ namespace CarRental.Controllers.Shared
                 {
                     // Use Docker defaults
                     databaseName = "SqlServer";
-                    connectionString = "Data Source=localhost,1433;Initial Catalog=CarRental;User Id=sa;Password=CarRental#123;TrustServerCertificate=True;";
+                    connectionString = "Data Source=127.0.0.1,1433;Initial Catalog=CarRental;User Id=sa;Password=CarRental#123;TrustServerCertificate=True;Connection Timeout=60;Pooling=false;";
                     providerName = "System.Data.SqlClient";
                     
                     try
