@@ -33,37 +33,12 @@ namespace CarRental.Controllers.Shared
                 // Ignore registration errors as it might already be registered
             }
 
-            // First, try to get the configuration from the normal App.config
             var databaseNameConfig = ConfigurationManager.AppSettings["databaseName"];
-            
-            // If the regular config is not available, check for Docker test environment
             if (string.IsNullOrEmpty(databaseNameConfig))
             {
-                // Check if we're in a test environment with Docker
-                if (IsDockerTestEnvironment())
-                {
-                    // Use Docker defaults
-                    databaseName = "SqlServer";
-                    connectionString = "Data Source=127.0.0.1,1433;Initial Catalog=CarRental;User Id=sa;Password=CarRental#123;TrustServerCertificate=True;";
-                    providerName = "System.Data.SqlClient";
-                    
-                    try
-                    {
-                        providerFactory = DbProviderFactories.GetFactory(providerName);
-                        return; // Successfully initialized with Docker defaults
-                    }
-                    catch (Exception ex)
-                    {
-                        throw new InvalidOperationException(
-                            $"Failed to create database provider factory for provider '{providerName}' in Docker test environment. Please ensure the provider is properly installed and configured.", ex);
-                    }
-                }
-                
-                // If not in Docker environment, throw the original error
                 throw new InvalidOperationException(
                     "Database name not configured. Please ensure 'databaseName' is set in appSettings in your App.config file.");
             }
-            
             databaseName = databaseNameConfig;
 
             var connectionStringConfig = ConfigurationManager.ConnectionStrings[databaseName];
@@ -96,49 +71,6 @@ namespace CarRental.Controllers.Shared
                 throw new InvalidOperationException(
                     $"Failed to create database provider factory for provider '{providerName}'. Please ensure the provider is properly installed and configured.", ex);
             }
-        }
-        
-        private static bool IsDockerTestEnvironment()
-        {
-            // Check if we're running in a test environment
-            var isTestEnvironment = System.Reflection.Assembly.GetExecutingAssembly().GetName().Name.Contains("Test") ||
-                                   Environment.CommandLine.Contains("testhost") ||
-                                   Environment.CommandLine.Contains("dotnet test");
-            
-            if (!isTestEnvironment)
-                return false;
-                
-            // Check if Docker is available and CarRental SQL Server container is running
-            try
-            {
-                var process = new System.Diagnostics.Process
-                {
-                    StartInfo = new System.Diagnostics.ProcessStartInfo
-                    {
-                        FileName = "docker",
-                        Arguments = "ps --filter name=carrental-sqlserver --format {{.Names}}",
-                        RedirectStandardOutput = true,
-                        RedirectStandardError = true,
-                        UseShellExecute = false,
-                        CreateNoWindow = true
-                    }
-                };
-
-                process.Start();
-                process.WaitForExit(5000); // 5 second timeout
-                
-                if (process.ExitCode == 0)
-                {
-                    var output = process.StandardOutput.ReadToEnd();
-                    return output?.Contains("carrental-sqlserver") == true;
-                }
-            }
-            catch
-            {
-                // If Docker is not available or any error occurs, return false
-            }
-            
-            return false;
         }
 
         public static int Insert(string sql, Dictionary<string, object> parameters)

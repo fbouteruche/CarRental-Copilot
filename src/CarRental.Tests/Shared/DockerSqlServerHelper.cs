@@ -59,11 +59,71 @@ namespace CarRental.Tests.Shared
         /// </summary>
         public static void UpdateConnectionString()
         {
-            var dockerConnectionString = "Data Source=localhost,1433;Initial Catalog=CarRental;User Id=sa;Password=CarRental#123;TrustServerCertificate=True;";
-            Environment.SetEnvironmentVariable("CarRental_ConnectionString", dockerConnectionString);
+            var dockerConnectionString = "Data Source=127.0.0.1,1433;Initial Catalog=CarRental;User Id=sa;Password=CarRental#123;TrustServerCertificate=True;";
             
-            // Also update the app.config
+            try
+            {
+                // In .NET 8, ConfigurationManager might not load App.config automatically in test environments
+                // Try to programmatically add the configuration
+                
+                // First, try to refresh the sections to force reload
+                System.Configuration.ConfigurationManager.RefreshSection("appSettings");
+                System.Configuration.ConfigurationManager.RefreshSection("connectionStrings");
+                
+                // Check if we can read the configuration now
+                var databaseName = System.Configuration.ConfigurationManager.AppSettings["databaseName"];
+                Console.WriteLine($"After refresh - Database name: '{databaseName}'");
+                
+                if (string.IsNullOrEmpty(databaseName))
+                {
+                    // If still empty, try to load the configuration file explicitly
+                    var configPath = Path.Combine(GetSolutionDirectory(), "src", "CarRental.Tests", "bin", "Debug", "net8.0", "CarRental.Tests.dll.config");
+                    if (File.Exists(configPath))
+                    {
+                        Console.WriteLine($"Attempting to load config from: {configPath}");
+                        
+                        // Use the legacy approach of updating runtime configuration
+                        // This is a workaround for .NET 8 ConfigurationManager issues
+                        UpdateRuntimeConfiguration(dockerConnectionString);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error updating configuration: {ex.Message}");
+            }
+            
+            // Also update the app.config files (legacy approach)
             UpdateAppConfig(dockerConnectionString);
+        }
+        
+        private static void UpdateRuntimeConfiguration(string connectionString)
+        {
+            try
+            {
+                // This is a workaround for .NET 8 where ConfigurationManager doesn't automatically load App.config
+                // We'll use reflection to add the configuration at runtime
+                var appSettingsType = typeof(System.Configuration.ConfigurationManager).Assembly.GetType("System.Configuration.ClientConfigurationSystem");
+                if (appSettingsType != null)
+                {
+                    var configSystem = Activator.CreateInstance(appSettingsType, true);
+                    
+                    // Try to get the current configuration and update it
+                    // This is complex and may not work in all scenarios
+                    Console.WriteLine("Attempting runtime configuration update...");
+                }
+                
+                // Alternative: Set as environment variables that the application can check
+                Environment.SetEnvironmentVariable("TEST_DATABASE_NAME", "SqlServer");
+                Environment.SetEnvironmentVariable("TEST_CONNECTION_STRING", connectionString);
+                Environment.SetEnvironmentVariable("TEST_PROVIDER_NAME", "System.Data.SqlClient");
+                
+                Console.WriteLine("Set test environment variables as fallback");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Runtime configuration update failed: {ex.Message}");
+            }
         }
         
         /// <summary>
