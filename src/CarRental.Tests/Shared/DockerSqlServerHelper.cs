@@ -2,6 +2,9 @@ using System;
 using System.Diagnostics;
 using System.IO;
 using System.Threading;
+using System.Collections.Generic;
+using Microsoft.Extensions.Configuration;
+using CarRental.Controllers.Shared;
 
 namespace CarRental.Tests.Shared
 {
@@ -55,123 +58,34 @@ namespace CarRental.Tests.Shared
         }
 
         /// <summary>
-        /// Updates the app.config connection string with Docker SQL Server details.
+        /// Updates the database configuration with Docker SQL Server details.
         /// </summary>
-        public static void UpdateConnectionString()
+        public static void UpdateConnectionString(IConfiguration configuration)
         {
             var dockerConnectionString = "Data Source=127.0.0.1,1433;Initial Catalog=CarRental;User Id=sa;Password=CarRental#123;TrustServerCertificate=True;";
             
             try
             {
-                // In .NET 8, ConfigurationManager might not load App.config automatically in test environments
-                // Try to programmatically add the configuration
-                
-                // First, try to refresh the sections to force reload
-                System.Configuration.ConfigurationManager.RefreshSection("appSettings");
-                System.Configuration.ConfigurationManager.RefreshSection("connectionStrings");
-                
-                // Check if we can read the configuration now
-                var databaseName = System.Configuration.ConfigurationManager.AppSettings["databaseName"];
-                Console.WriteLine($"After refresh - Database name: '{databaseName}'");
-                
-                if (string.IsNullOrEmpty(databaseName))
-                {
-                    // If still empty, try to load the configuration file explicitly
-                    var configPath = Path.Combine(GetSolutionDirectory(), "src", "CarRental.Tests", "bin", "Debug", "net8.0", "CarRental.Tests.dll.config");
-                    if (File.Exists(configPath))
+                // For the modern configuration approach, we need to reinitialize the Db class
+                // with the updated connection string for Docker
+                var builder = new ConfigurationBuilder()
+                    .AddJsonFile("appsettings.json", optional: false)
+                    .AddInMemoryCollection(new[]
                     {
-                        Console.WriteLine($"Attempting to load config from: {configPath}");
-                        
-                        // Use the legacy approach of updating runtime configuration
-                        // This is a workaround for .NET 8 ConfigurationManager issues
-                        UpdateRuntimeConfiguration(dockerConnectionString);
-                    }
-                }
+                        new KeyValuePair<string, string>("ConnectionStrings:SqlServer", dockerConnectionString)
+                    });
+
+                var updatedConfig = builder.Build();
+                var dbConfig = new DatabaseConfiguration(updatedConfig);
+                Db.Initialize(dbConfig);
+                
+                Console.WriteLine("Updated database configuration with Docker connection string");
             }
             catch (Exception ex)
             {
                 Console.WriteLine($"Error updating configuration: {ex.Message}");
             }
-            
-            // Also update the app.config files (legacy approach)
-            UpdateAppConfig(dockerConnectionString);
         }
-        
-        private static void UpdateRuntimeConfiguration(string connectionString)
-        {
-            try
-            {
-                // This is a workaround for .NET 8 where ConfigurationManager doesn't automatically load App.config
-                // We'll use reflection to add the configuration at runtime
-                var appSettingsType = typeof(System.Configuration.ConfigurationManager).Assembly.GetType("System.Configuration.ClientConfigurationSystem");
-                if (appSettingsType != null)
-                {
-                    var configSystem = Activator.CreateInstance(appSettingsType, true);
-                    
-                    // Try to get the current configuration and update it
-                    // This is complex and may not work in all scenarios
-                    Console.WriteLine("Attempting runtime configuration update...");
-                }
-                
-                // Alternative: Set as environment variables that the application can check
-                Environment.SetEnvironmentVariable("TEST_DATABASE_NAME", "SqlServer");
-                Environment.SetEnvironmentVariable("TEST_CONNECTION_STRING", connectionString);
-                Environment.SetEnvironmentVariable("TEST_PROVIDER_NAME", "System.Data.SqlClient");
-                
-                Console.WriteLine("Set test environment variables as fallback");
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"Runtime configuration update failed: {ex.Message}");
-            }
-        }
-        
-        /// <summary>
-        /// Updates the app.config file with Docker SQL Server connection string.
-        /// </summary>
-        private static void UpdateAppConfig(string connectionString)
-        {
-            try
-            {
-                // Update the source App.config
-                var configFile = Path.Combine(GetSolutionDirectory(), "src", "CarRental.Tests", "App.config");
-                UpdateConfigFile(configFile, connectionString);
-                
-                // Also update the runtime App.config in the bin directory if it exists
-                var runtimeConfigFile = Path.Combine(GetSolutionDirectory(), "src", "CarRental.Tests", "bin", "Debug", "net8.0", "App.config");
-                if (File.Exists(runtimeConfigFile))
-                {
-                    UpdateConfigFile(runtimeConfigFile, connectionString);
-                }
-                
-                // Update the dll.config file as well
-                var dllConfigFile = Path.Combine(GetSolutionDirectory(), "src", "CarRental.Tests", "bin", "Debug", "net8.0", "CarRental.Tests.dll.config");
-                if (File.Exists(dllConfigFile))
-                {
-                    UpdateConfigFile(dllConfigFile, connectionString);
-                }
-                
-                Console.WriteLine("Updated App.config with Docker connection string");
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"Error updating App.config: {ex.Message}");
-            }
-        }
-        
-        private static void UpdateConfigFile(string configFile, string connectionString)
-        {
-            string configContent = File.ReadAllText(configFile);
-            
-            // Replace the connection string in config
-            var updatedContent = System.Text.RegularExpressions.Regex.Replace(
-                configContent,
-                @"<add name=""SqlServer""[^>]*connectionString=""[^""]*""",
-                $"<add name=\"SqlServer\" providerName=\"System.Data.SqlClient\" connectionString=\"{connectionString}\"");
-            
-            File.WriteAllText(configFile, updatedContent);
-        }
-
         /// <summary>
         /// Cleans up Docker resources when tests are done.
         /// </summary>

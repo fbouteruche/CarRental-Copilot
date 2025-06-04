@@ -1,5 +1,7 @@
 using System;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Microsoft.Extensions.Configuration;
+using CarRental.Controllers.Shared;
 
 namespace CarRental.Tests.Shared
 {
@@ -17,6 +19,15 @@ namespace CarRental.Tests.Shared
             
             try
             {
+                // Initialize configuration
+                var configuration = new ConfigurationBuilder()
+                    .AddJsonFile("appsettings.json", optional: false)
+                    .Build();
+
+                // Initialize database configuration
+                var dbConfig = new DatabaseConfiguration(configuration);
+                Db.Initialize(dbConfig);
+
                 // Check if Docker is available
                 if (!IsDockerAvailable())
                 {
@@ -29,7 +40,7 @@ namespace CarRental.Tests.Shared
                 DockerSqlServerHelper.EnsureDockerSqlServerIsRunning();
                 
                 // Update connection string to use Docker container
-                DockerSqlServerHelper.UpdateConnectionString();
+                DockerSqlServerHelper.UpdateConnectionString(configuration);
                 
                 _dockerInitializationSucceeded = true;
                 Console.WriteLine("Database setup completed successfully");
