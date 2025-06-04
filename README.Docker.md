@@ -12,21 +12,15 @@ This project uses Docker to provide a consistent SQL Server environment for test
 1. Make sure Docker is running on your machine
 2. From the root of the project, run:
 
-**On Linux/macOS:**
 ```bash
-./setup-docker-sqlserver.sh
+docker compose up -d
 ```
 
-**On Windows:**
-```powershell
-.\setup-docker-sqlserver.ps1
-```
-
-This script will:
-- Stop and remove any existing CarRental SQL Server container
+This command will:
 - Build a new Docker image with SQL Server configured for the CarRental app
 - Start a new container with the SQL Server instance
 - Initialize the CarRental database with the required schema
+- Set up health checks to ensure the database is ready
 
 ## Test Configuration
 
@@ -48,15 +42,8 @@ docker ps | grep carrental-sqlserver
 ```
 
 2. If the container is not running, start it:
-
-**On Linux/macOS:**
 ```bash
-./setup-docker-sqlserver.sh
-```
-
-**On Windows:**
-```powershell
-.\setup-docker-sqlserver.ps1
+docker compose up -d
 ```
 
 3. Check Docker logs for any issues:
@@ -64,10 +51,11 @@ docker ps | grep carrental-sqlserver
 docker logs carrental-sqlserver
 ```
 
-4. If you see errors about missing tools (like sqlcmd), try rebuilding the image:
+4. If you see errors, try rebuilding the image:
 ```bash
-docker build --no-cache -t carrental-sqlserver -f Dockerfile.sqlserver .
-docker run -d --name carrental-sqlserver -p 1433:1433 carrental-sqlserver
+docker compose down
+docker compose build --no-cache
+docker compose up -d
 ```
 
 5. View the container's detailed logs:
