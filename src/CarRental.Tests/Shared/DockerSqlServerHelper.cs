@@ -39,12 +39,9 @@ namespace CarRental.Tests.Shared
                     // Start the container using docker-compose
                     RunProcess("docker-compose", $"-f \"{DockerComposeFilePath}\" up -d");
                     
-                    // Wait for SQL Server to be ready
-                    Console.WriteLine("Waiting for SQL Server to start (may take up to 60 seconds)...");
-                    Thread.Sleep(30000); // Wait 30 seconds for SQL Server to initialize
-                    
-                    // Run the initialization script inside the container
-                    RunProcess("docker", "exec carrental-sqlserver /opt/mssql-tools18/bin/sqlcmd -S localhost -U sa -P \"CarRental#123\" -C -i /usr/src/app/init-db.sql");
+                    // Wait for SQL Server to be ready (initialization script runs automatically in container)
+                    Console.WriteLine("Waiting for SQL Server to start and initialize (may take up to 60 seconds)...");
+                    Thread.Sleep(30000); // Wait 30 seconds for SQL Server and database initialization to complete
                     
                     Console.WriteLine("Docker SQL Server container is now running and initialized.");
                     _containerStarted = true;
