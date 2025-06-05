@@ -6,7 +6,6 @@ using CarRental.Domain.VehicleModule;
 using System;
 using System.Collections.Generic;
 using System.Data;
-using System.Drawing;
 
 namespace CarRental.Controllers.VehicleModule
 {
@@ -167,9 +166,9 @@ namespace CarRental.Controllers.VehicleModule
             if (validationResult == "VALID")
             {
                 vehicle.Id = Db.Insert(sqlInsertVehicle, GetVehicleParameters(vehicle));
-                if (vehicle.images != null)
+                if (vehicle.Images != null)
                 {
-                    foreach (VehicleImage vehicleImage in vehicle.images)
+                    foreach (VehicleImage vehicleImage in vehicle.Images)
                     {
                         vehicleImage.VehicleId = vehicle.Id;
                         imageController.InsertNew(vehicleImage);
@@ -184,15 +183,18 @@ namespace CarRental.Controllers.VehicleModule
 
             foreach (Vehicle vehicle in vehicles)
             {
-                vehicle.images = imageController.SelectAllImagesOfVehicle(vehicle.Id);
+                vehicle.Images = imageController.SelectAllImagesOfVehicle(vehicle.Id);
             }
 
             return vehicles;
         }
-        public override Vehicle SelectById(int id)
+        public override Vehicle? SelectById(int id)
         {
-            Vehicle vehicle = Db.Get(sqlSelectVehicleById, ConvertToVehicle, AddParameter("Id", id));
-            vehicle.images = imageController.SelectAllImagesOfVehicle(id);
+            Vehicle? vehicle = Db.Get(sqlSelectVehicleById, ConvertToVehicle, AddParameter("Id", id));
+            if (vehicle != null)
+            {
+                vehicle.Images = imageController.SelectAllImagesOfVehicle(id);
+            }
             return vehicle;
         }
         public override string Edit(int id, Vehicle vehicle)
@@ -203,9 +205,9 @@ namespace CarRental.Controllers.VehicleModule
             {
                 vehicle.Id = id;
                 Db.Update(sqlEditVehicle, GetVehicleParameters(vehicle));
-                foreach (VehicleImage image in vehicle.images)
+                foreach (VehicleImage image in vehicle.Images ?? new List<VehicleImage>())
                     image.VehicleId = vehicle.Id;
-                imageController.EditList(vehicle.images);
+                imageController.EditList(vehicle.Images ?? new List<VehicleImage>());
             }
 
             return validationResult;
@@ -234,23 +236,23 @@ namespace CarRental.Controllers.VehicleModule
             var parameters = new Dictionary<string, object>();
 
             parameters.Add("Id", vehicle.Id);
-            parameters.Add("Model", vehicle.model);
-            parameters.Add("VehicleGroupId", vehicle.vehicleGroup.Id);
-            parameters.Add("Plate", vehicle.licensePlate);
-            parameters.Add("Chassis", vehicle.chassis);
-            parameters.Add("Brand", vehicle.brand);
-            parameters.Add("Color", vehicle.color);
-            parameters.Add("FuelType", vehicle.fuelType);
-            parameters.Add("TankCapacity", vehicle.tankCapacity);
-            parameters.Add("Year", vehicle.year);
-            parameters.Add("Mileage", vehicle.mileage);
-            parameters.Add("NumberOfDoors", vehicle.numberOfDoors);
-            parameters.Add("PeopleCapacity", vehicle.passengerCapacity);
-            parameters.Add("TrunkSize", vehicle.trunkSize);
-            parameters.Add("HasAirConditioning", vehicle.hasAirConditioning);
-            parameters.Add("HasPowerSteering", vehicle.hasPowerSteering);
-            parameters.Add("HasAbsBrakes", vehicle.hasAbsBrakes);
-            parameters.Add("IsRented", vehicle.isRented);
+            parameters.Add("Model", vehicle.Model);
+            parameters.Add("VehicleGroupId", vehicle.VehicleGroup?.Id ?? 0);
+            parameters.Add("Plate", vehicle.LicensePlate);
+            parameters.Add("Chassis", vehicle.Chassis);
+            parameters.Add("Brand", vehicle.Brand);
+            parameters.Add("Color", vehicle.Color);
+            parameters.Add("FuelType", vehicle.FuelType);
+            parameters.Add("TankCapacity", vehicle.TankCapacity);
+            parameters.Add("Year", vehicle.Year);
+            parameters.Add("Mileage", vehicle.Mileage);
+            parameters.Add("NumberOfDoors", vehicle.NumberOfDoors);
+            parameters.Add("PeopleCapacity", vehicle.PassengerCapacity);
+            parameters.Add("TrunkSize", vehicle.TrunkSize);
+            parameters.Add("HasAirConditioning", vehicle.HasAirConditioning);
+            parameters.Add("HasPowerSteering", vehicle.HasPowerSteering);
+            parameters.Add("HasAbsBrakes", vehicle.HasAbsBrakes);
+            parameters.Add("IsRented", vehicle.IsRented);
 
             return parameters;
         }
@@ -276,7 +278,7 @@ namespace CarRental.Controllers.VehicleModule
             var hasAbsBrakes = Convert.ToBoolean(reader["HasAbsBrakes"]);
             var isRented = Convert.ToBoolean(reader["IsRented"]);
 
-            string name = Convert.ToString(reader["Name"]);
+            string? name = Convert.ToString(reader["Name"]) ?? string.Empty;
             double dailyPlanRate = Convert.ToDouble(reader["DailyPlanRate"]);
             double dailyPerKmRate = Convert.ToDouble(reader["DailyKmRate"]);
             double controlledPlanRate = Convert.ToDouble(reader["ControlledPlanRate"]);

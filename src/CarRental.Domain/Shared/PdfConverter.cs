@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -50,13 +51,13 @@ namespace CarRental.Controllers.Shared
                 $"      - Email: {rental.DriverCustomer.Email}",
                 $"      - Driver's License: {rental.DriverCustomer.DriverLicense}",
                 $"• Rented Vehicle:",
-                $"      - Model: {rental.Vehicle.model}",
-                $"      - Brand: {rental.Vehicle.brand}",
-                $"      - License Plate: {rental.Vehicle.licensePlate}",
-                $"      - Year: {rental.Vehicle.year}",
-                $"      - Color: {rental.Vehicle.color}",
-                $"      - Number of doors: {rental.Vehicle.numberOfDoors}",
-                $"      - Current mileage: {rental.Vehicle.mileage} km"
+                $"      - Model: {rental.Vehicle.Model}",
+                $"      - Brand: {rental.Vehicle.Brand}",
+                $"      - License Plate: {rental.Vehicle.LicensePlate}",
+                $"      - Year: {rental.Vehicle.Year}",
+                $"      - Color: {rental.Vehicle.Color}",
+                $"      - Number of doors: {rental.Vehicle.NumberOfDoors}",
+                $"      - Current mileage: {rental.Vehicle.Mileage} km"
             };
 
             GeneratePdf(filePath, title, lines);
@@ -66,8 +67,8 @@ namespace CarRental.Controllers.Shared
         {
             double lineXPosition = 70;
             double lineYPosition = 15;
-            XFont titleFont = new XFont(fontFamily, titleFontSize, XFontStyle.Bold);
-            XFont textFont = new XFont(fontFamily, textFontSize, XFontStyle.Regular);
+            XFont titleFont = new XFont(fontFamily, titleFontSize, XFontStyleEx.Bold);
+            XFont textFont = new XFont(fontFamily, textFontSize, XFontStyleEx.Regular);
 
             PdfDocument pdf = new PdfDocument();
             pdf.Info.Title = titleText;
@@ -88,7 +89,38 @@ namespace CarRental.Controllers.Shared
             }
 
             pdf.Save(fileName);
-            Process.Start(fileName);
+            
+            // Use platform-specific approach to open the file
+            OpenFile(fileName);
+        }
+        
+        private void OpenFile(string filePath)
+        {
+            try
+            {
+                if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+                {
+                    Process.Start(new ProcessStartInfo { FileName = filePath, UseShellExecute = true });
+                }
+                else if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
+                {
+                    Process.Start("xdg-open", filePath);
+                }
+                else if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
+                {
+                    Process.Start("open", filePath);
+                }
+                else
+                {
+                    // Fallback or throw an exception for unsupported OS
+                    throw new PlatformNotSupportedException("This platform is not supported for opening PDF files.");
+                }
+            }
+            catch (Exception ex)
+            {
+                // Handle the exception appropriately
+                Console.WriteLine($"Failed to open PDF file: {ex.Message}");
+            }
         }
     }
 }

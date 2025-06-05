@@ -11,10 +11,10 @@ namespace CarRental.Domain.PartnerModule
     {
         public string Name { get; }
 
-        public Partner(int id, string name)
+        public Partner(int id, string? name)
         {
             Id = id;
-            Name = name;
+            Name = name ?? string.Empty;
         }
 
         public override string Validate()
@@ -29,7 +29,7 @@ namespace CarRental.Domain.PartnerModule
             return validationResult;
         }
 
-        public override bool Equals(object obj)
+        public override bool Equals(object? obj)
         {
             return obj is Partner comparerdPartner &&
                    Id == comparerdPartner.Id &&

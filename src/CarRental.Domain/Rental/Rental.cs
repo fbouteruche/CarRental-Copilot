@@ -15,7 +15,7 @@ namespace CarRental.Domain.RentalModule
         private Employee rentingEmployee;
         private Customer contractingCustomer;
         private Customer driverCustomer;
-        private Coupon coupon;
+        private CouponModule.Coupon? coupon;
         private DateTime departureDate;
         private DateTime expectedReturnDate;
         private DateTime returnDate;
@@ -27,7 +27,7 @@ namespace CarRental.Domain.RentalModule
         private List<Service> services;
 
         // Constructor for common use (ISSUES IN TESTS. EQUALS RETURNS DIFFERENT)
-        public Rental(int id, Vehicle vehicle, Employee rentingEmployee, Customer contractingCustomer, Customer driverCustomer, CouponModule.Coupon coupon, DateTime departureDate, DateTime expectedReturnDate, string planType, string insuranceType, List<Service> services)
+        public Rental(int id, Vehicle vehicle, Employee rentingEmployee, Customer contractingCustomer, Customer driverCustomer, CouponModule.Coupon? coupon, DateTime departureDate, DateTime expectedReturnDate, string planType, string insuranceType, List<Service> services)
         {
             this.id = id;
             this.vehicle = vehicle;
@@ -48,7 +48,7 @@ namespace CarRental.Domain.RentalModule
         }
 
         // Constructor ONLY for loading from the database
-        public Rental(int id, Vehicle vehicle, Employee rentingEmployee, Customer contractingCustomer, Customer driverCustomer, CouponModule.Coupon coupon, DateTime departureDate, DateTime expectedReturnDate, DateTime returnDate, string planType, string insuranceType, double rentalPrice, double returnPrice, bool isOpen, List<Service> services)
+        public Rental(int id, Vehicle vehicle, Employee rentingEmployee, Customer contractingCustomer, Customer driverCustomer, CouponModule.Coupon? coupon, DateTime departureDate, DateTime expectedReturnDate, DateTime returnDate, string? planType, string? insuranceType, double rentalPrice, double returnPrice, bool isOpen, List<Service> services)
         {
             this.id = id;
             this.vehicle = vehicle;
@@ -59,8 +59,8 @@ namespace CarRental.Domain.RentalModule
             this.departureDate = departureDate;
             this.expectedReturnDate = expectedReturnDate;
             this.returnDate = returnDate;
-            this.planType = planType;
-            this.insuranceType = insuranceType;
+            this.planType = planType ?? string.Empty;
+            this.insuranceType = insuranceType ?? string.Empty;
             this.rentalPrice = rentalPrice;
             this.returnPrice = returnPrice;
             this.isOpen = isOpen;
@@ -71,7 +71,7 @@ namespace CarRental.Domain.RentalModule
         public Employee RentingEmployee { get => rentingEmployee; }
         public Customer ContractingCustomer { get => contractingCustomer; }
         public Customer DriverCustomer { get => driverCustomer; }
-        public CouponModule.Coupon Coupon { get => coupon; }
+        public CouponModule.Coupon? Coupon { get => coupon; }
         public DateTime DepartureDate { get => departureDate; }
         public DateTime ExpectedReturnDate { get => expectedReturnDate; }
         public DateTime ReturnDate { get => returnDate; }
@@ -86,7 +86,7 @@ namespace CarRental.Domain.RentalModule
         {
             isOpen = true;
             departureDate = openingDate;
-            vehicle.isRented = true;
+            vehicle.IsRented = true;
             rentalPrice = CalculateRental.CalculateInsurance(insuranceType);
             rentalPrice += CalculateRental.CalculateGuarantee();
             rentalPrice = Math.Round(rentalPrice, 2);
@@ -96,11 +96,11 @@ namespace CarRental.Domain.RentalModule
         {
             isOpen = false;
             returnDate = closingDate;
-            vehicle.mileage += kilometersDriven;
-            vehicle.isRented = false;
+            vehicle.Mileage += kilometersDriven;
+            vehicle.IsRented = false;
             returnPrice = rentalPrice;
             returnPrice += fuelSurcharge;
-            returnPrice += CalculateRental.CalculatePlan(planType, vehicle.vehicleGroup, kilometersDriven, departureDate, returnDate);
+            returnPrice += CalculateRental.CalculatePlan(planType, vehicle.VehicleGroup, kilometersDriven, departureDate, returnDate);
             returnPrice += CalculateRental.CalculateServices(services, departureDate, returnDate);
             returnPrice += CalculateRental.CalculateLateReturnFee(returnPrice, expectedReturnDate, returnDate);
             returnPrice -= CalculateRental.CalculateDiscountCoupon(returnPrice, coupon);
@@ -146,7 +146,7 @@ namespace CarRental.Domain.RentalModule
             return $"RentalModule = {id}, {vehicle}, {rentingEmployee}, {contractingCustomer}, {driverCustomer}, {departureDate}, {expectedReturnDate}, {returnDate}, {planType}, {insuranceType}, {rentalPrice}, {returnPrice}, {isOpen}";
         }
 
-        public override bool Equals(object obj)
+        public override bool Equals(object? obj)
         {
             return obj is Rental rental &&
                    id == rental.id &&

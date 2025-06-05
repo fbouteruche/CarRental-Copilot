@@ -98,7 +98,7 @@ namespace CarRental.Controllers.EmployeeModule
             return validationResult;
         }
 
-        public override Employee SelectById(int id)
+        public override Employee? SelectById(int id)
         {
             return Db.Get(selectByIdCommand, ConvertToEmployee, AddParameter("Id", id));
         }
@@ -132,17 +132,17 @@ namespace CarRental.Controllers.EmployeeModule
         private Employee ConvertToEmployee(IDataReader reader)
         {
             int id = Convert.ToInt32(reader["Id"]);
-            string name = Convert.ToString(reader["Name"]);
-            string uniqueId = Convert.ToString(reader["UniqueRegister"]);
-            string address = Convert.ToString(reader["Address"]);
-            string phone = Convert.ToString(reader["Phone"]);
-            string email = Convert.ToString(reader["Email"]);
+            string? name = reader["Name"] != DBNull.Value ? Convert.ToString(reader["Name"]) : null;
+            string? uniqueId = reader["UniqueRegister"] != DBNull.Value ? Convert.ToString(reader["UniqueRegister"]) : null;
+            string? address = reader["Address"] != DBNull.Value ? Convert.ToString(reader["Address"]) : null;
+            string? phone = reader["Phone"] != DBNull.Value ? Convert.ToString(reader["Phone"]) : null;
+            string? email = reader["Email"] != DBNull.Value ? Convert.ToString(reader["Email"]) : null;
             int internalRegistration = Convert.ToInt32(reader["InternalRegister"]);
-            string loginUsername = Convert.ToString(reader["AccessUser"]);
-            string userPassword = Convert.ToString(reader["Password"]);
+            string? loginUsername = reader["AccessUser"] != DBNull.Value ? Convert.ToString(reader["AccessUser"]) : null;
+            string? userPassword = reader["Password"] != DBNull.Value ? Convert.ToString(reader["Password"]) : null;
             DateTime hiringDate = Convert.ToDateTime(reader["AdmissionDate"]);
-            string jobTitle = Convert.ToString(reader["Role"]);
-            double salary = Convert.ToDouble(Convert.ToString(reader["Salary"]));
+            string? jobTitle = reader["Role"] != DBNull.Value ? Convert.ToString(reader["Role"]) : null;
+            double salary = Convert.ToDouble(Convert.ToString(reader["Salary"] ?? "0"));
             bool isPhysicalPerson = Convert.ToBoolean(reader["IsIndividual"]);
 
             Employee employee = new Employee(id, name, uniqueId, address, phone, email, internalRegistration, loginUsername, userPassword, hiringDate, jobTitle, salary, isPhysicalPerson);

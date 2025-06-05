@@ -21,11 +21,16 @@ namespace CarRental.Controllers.RentalModule
 {
     public class RentalController : Controller<Rental>
     {
-        private VehicleController vehicleController = null;
-        private EmployeeController employeeController = null;
-        private CustomerController customerController = null;
-        private ServiceController serviceController = null;
-        private CouponController couponController = new CouponController();
+        private VehicleController? vehicleController = null;
+        private EmployeeController? employeeController = null;
+        private CustomerController? customerController = null;
+        private ServiceController? serviceController = null;
+        private CouponController? couponController = null;
+
+        public RentalController() 
+        {
+            // Default constructor for DI
+        }
 
         public RentalController(VehicleController vehicleController, EmployeeController employeeController, CustomerController customerController, ServiceController serviceController, CouponController couponController)
         {
@@ -33,7 +38,7 @@ namespace CarRental.Controllers.RentalModule
             this.employeeController = employeeController;
             this.customerController = customerController;
             this.serviceController = serviceController;
-            //this.couponController = couponController; // If you want to use a different couponController instance, uncomment this line.
+            this.couponController = couponController;
         }
 
         #region queries
@@ -117,7 +122,7 @@ namespace CarRental.Controllers.RentalModule
         {
             return Db.GetAll(sqlSelectAllRentals, ConvertToRental);
         }
-        public override Rental SelectById(int id)
+        public override Rental? SelectById(int id)
         {
             return Db.Get(sqlSelectRentalById, ConvertToRental, AddParameter("Id", id));
         }
@@ -128,7 +133,11 @@ namespace CarRental.Controllers.RentalModule
             List<int> serviceIds = Db.GetAll(sqlSelectServiceIdByRentalId, ConvertToInt, AddParameter("RentalId", rentalId));
             foreach (int serviceId in serviceIds)
             {
-                rentalServices.Add(serviceController.SelectById(serviceId));
+                Service? service = serviceController?.SelectById(serviceId);
+                if (service != null)
+                {
+                    rentalServices.Add(service);
+                }
             }
             return rentalServices;
         }
@@ -176,7 +185,7 @@ namespace CarRental.Controllers.RentalModule
             if (rental.Coupon != null)
                 parameters.Add("CouponId", rental.Coupon.Id);
             else
-                parameters.Add("CouponId", null);
+                parameters.Add("CouponId", DBNull.Value);
             parameters.Add("DepartureDate", rental.DepartureDate);
             parameters.Add("ExpectedReturnDate", rental.ExpectedReturnDate);
             parameters.Add("ReturnDate", rental.ReturnDate);
@@ -206,23 +215,26 @@ namespace CarRental.Controllers.RentalModule
             var departureDate = Convert.ToDateTime(reader["DepartureDate"]);
             var expectedReturnDate = Convert.ToDateTime(reader["ExpectedReturnDate"]);
             var returnDate = Convert.ToDateTime(reader["ReturnDate"]);
-            var planType = Convert.ToString(reader["PlanType"]);
-            var insuranceType = Convert.ToString(reader["InsuranceType"]);
+            var planType = Convert.ToString(reader["PlanType"]) ?? string.Empty;
+            var insuranceType = Convert.ToString(reader["InsuranceType"]) ?? string.Empty;
             var rentalPrice = Convert.ToDouble(reader["RentalPrice"]);
             var returnPrice = Convert.ToDouble(reader["ReturnPrice"]);
             var isOpen = Convert.ToBoolean(reader["IsOpen"]);
 
             List<Service> rentalServices = SelectServicesByRentalId(id);
 
-            Vehicle vehicle = vehicleController.SelectById(vehicleId);
-            Employee rentingEmployee = employeeController.SelectById(employeeId);
-            Customer contractingCustomer = customerController.SelectById(contractingClientId);
-            Customer driverCustomer = customerController.SelectById(driverClientId);
-            Coupon coupon;
-            if (couponId != 0)
+            Vehicle? vehicle = vehicleController?.SelectById(vehicleId);
+            Employee? rentingEmployee = employeeController?.SelectById(employeeId);
+            Customer? contractingCustomer = customerController?.SelectById(contractingClientId);
+            Customer? driverCustomer = customerController?.SelectById(driverClientId);
+            Coupon? coupon = null;
+            if (couponId != 0 && couponController != null)
                 coupon = couponController.SelectById(couponId);
-            else
-                coupon = null;
+
+            if (vehicle == null || rentingEmployee == null || contractingCustomer == null || driverCustomer == null)
+            {
+                throw new ArgumentException("Required entity not found in the database");
+            }
 
             return new Rental(id, vehicle, rentingEmployee, contractingCustomer, driverCustomer, coupon, departureDate, expectedReturnDate, returnDate, planType, insuranceType, rentalPrice, returnPrice, isOpen, rentalServices);
         }

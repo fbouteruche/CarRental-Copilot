@@ -1,0 +1,95 @@
+@page "/vehicles"
+@using CarRental.Controllers.VehicleModule
+@using CarRental.Domain.VehicleModule
+
+<PageTitle>Vehicles - Car Rental System</PageTitle>
+
+<h1>Vehicles</h1>
+
+<div class="mb-3">
+    <a href="/vehicles/new" class="btn btn-primary">Add New Vehicle</a>
+</div>
+
+@if (vehicles == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <div class="table-responsive">
+        <table class="table table-striped table-hover">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Model</th>
+                    <th>Brand</th>
+                    <th>License Plate</th>
+                    <th>Color</th>
+                    <th>Year</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var vehicle in vehicles)
+                {
+                    <tr>
+                        <td>@vehicle.Id</td>
+                        <td>@vehicle.Model</td>
+                        <td>@vehicle.Brand</td>
+                        <td>@vehicle.LicensePlate</td>
+                        <td>@vehicle.Color</td>
+                        <td>@vehicle.Year</td>
+                        <td>
+                            @if (vehicle.IsRented)
+                            {
+                                <span class="badge bg-danger">Rented</span>
+                            }
+                            else
+                            {
+                                <span class="badge bg-success">Available</span>
+                            }
+                        </td>
+                        <td>
+                            <div class="btn-group">
+                                <a href="/vehicles/@vehicle.Id" class="btn btn-sm btn-info">Details</a>
+                                <a href="/vehicles/edit/@vehicle.Id" class="btn btn-sm btn-warning">Edit</a>
+                                <button class="btn btn-sm btn-danger" @onclick="() => DeleteVehicle(vehicle.Id)">Delete</button>
+                            </div>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+}
+
+@code {
+    [Inject]
+    private VehicleController VehicleController { get; set; } = default!;
+    
+    [Inject]
+    private NavigationManager NavigationManager { get; set; } = default!;
+
+    private List<Vehicle>? vehicles;
+
+    protected override void OnInitialized()
+    {
+        LoadVehicles();
+    }
+
+    private void LoadVehicles()
+    {
+        vehicles = VehicleController.SelectAll();
+    }
+
+    private void DeleteVehicle(int id)
+    {
+        bool confirmed = true; // In a real app, you'd use a confirmation dialog
+        if (confirmed)
+        {
+            VehicleController.Delete(id);
+            LoadVehicles();
+        }
+    }
+}

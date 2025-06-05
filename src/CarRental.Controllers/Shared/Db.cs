@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Configuration;
 using System.Data;
 using System.Data.Common;
 using System.Linq;
@@ -13,29 +12,63 @@ namespace CarRental.Controllers.Shared
 
     public static class Db
     {
-        private static readonly string databaseName;
-        private static readonly string connectionString = "";
-        private static readonly string providerName;
-        private static readonly DbProviderFactory providerFactory;
+        private static IDatabaseConfiguration? _configuration;
+        private static DbProviderFactory? _providerFactory;
+        private static bool _initialized = false;
+        private static readonly object _lockObject = new object();
 
         static Db()
         {
-            databaseName = ConfigurationManager.AppSettings["databaseName"];
+            // Register SQL Client provider if not already registered (needed for .NET Core)
+            try
+            {
+                if (!DbProviderFactories.GetProviderInvariantNames().Contains("System.Data.SqlClient"))
+                {
+                    DbProviderFactories.RegisterFactory("System.Data.SqlClient", System.Data.SqlClient.SqlClientFactory.Instance);
+                }
+            }
+            catch (Exception)
+            {
+                // Ignore registration errors as it might already be registered
+            }
+        }
 
-            connectionString = ConfigurationManager.ConnectionStrings[databaseName].ConnectionString;
+        public static void Initialize(IDatabaseConfiguration configuration)
+        {
+            lock (_lockObject)
+            {
+                _configuration = configuration ?? throw new ArgumentNullException(nameof(configuration));
+                
+                try
+                {
+                    _providerFactory = DbProviderFactories.GetFactory(_configuration.ProviderName);
+                    _initialized = true;
+                }
+                catch (Exception ex)
+                {
+                    throw new InvalidOperationException(
+                        $"Failed to create database provider factory for provider '{_configuration.ProviderName}'. Please ensure the provider is properly installed and configured.", ex);
+                }
+            }
+        }
 
-            providerName = ConfigurationManager.ConnectionStrings[databaseName].ProviderName;
-
-            providerFactory = DbProviderFactories.GetFactory(providerName);
+        private static void EnsureInitialized()
+        {
+            if (!_initialized || _configuration == null)
+            {
+                throw new InvalidOperationException(
+                    "Database configuration not initialized. Please call Db.Initialize() with a valid configuration before using the database.");
+            }
         }
 
         public static int Insert(string sql, Dictionary<string, object> parameters)
         {
-            using (IDbConnection connection = providerFactory.CreateConnection())
+            EnsureInitialized();
+            using (IDbConnection connection = _providerFactory!.CreateConnection()!)
             {
-                connection.ConnectionString = connectionString;
+                connection.ConnectionString = _configuration!.ConnectionString;
 
-                using (IDbCommand command = providerFactory.CreateCommand())
+                using (IDbCommand command = _providerFactory!.CreateCommand()!)
                 {
                     command.CommandText = sql.AppendSelectIdentity();
                     command.Connection = connection;
@@ -50,13 +83,14 @@ namespace CarRental.Controllers.Shared
             }
         }
 
-        public static void Update(string sql, Dictionary<string, object> parameters = null)
+        public static void Update(string sql, Dictionary<string, object>? parameters = null)
         {
-            using (IDbConnection connection = providerFactory.CreateConnection())
+            EnsureInitialized();
+            using (IDbConnection connection = _providerFactory!.CreateConnection()!)
             {
-                connection.ConnectionString = connectionString;
+                connection.ConnectionString = _configuration!.ConnectionString;
 
-                using (IDbCommand command = providerFactory.CreateCommand())
+                using (IDbCommand command = _providerFactory!.CreateCommand()!)
                 {
                     command.CommandText = sql;
 
@@ -76,13 +110,14 @@ namespace CarRental.Controllers.Shared
             Update(sql, parameters);
         }
 
-        public static List<T> GetAll<T>(string sql, ConverterDelegate<T> convert, Dictionary<string, object> parameters = null)
+        public static List<T> GetAll<T>(string sql, ConverterDelegate<T> convert, Dictionary<string, object>? parameters = null)
         {
-            using (IDbConnection connection = providerFactory.CreateConnection())
+            EnsureInitialized();
+            using (IDbConnection connection = _providerFactory!.CreateConnection()!)
             {
-                connection.ConnectionString = connectionString;
+                connection.ConnectionString = _configuration!.ConnectionString;
 
-                using (IDbCommand command = providerFactory.CreateCommand())
+                using (IDbCommand command = _providerFactory!.CreateCommand()!)
                 {
                     command.CommandText = sql;
 
@@ -108,13 +143,14 @@ namespace CarRental.Controllers.Shared
             }
         }
 
-        public static T Get<T>(string sql, ConverterDelegate<T> convert, Dictionary<string, object> parameters)
+        public static T? Get<T>(string sql, ConverterDelegate<T> convert, Dictionary<string, object> parameters)
         {
-            using (IDbConnection connection = providerFactory.CreateConnection())
+            EnsureInitialized();
+            using (IDbConnection connection = _providerFactory!.CreateConnection()!)
             {
-                connection.ConnectionString = connectionString;
+                connection.ConnectionString = _configuration!.ConnectionString;
 
-                using (IDbCommand command = providerFactory.CreateCommand())
+                using (IDbCommand command = _providerFactory!.CreateCommand()!)
                 {
                     command.CommandText = sql;
 
@@ -124,7 +160,7 @@ namespace CarRental.Controllers.Shared
 
                     connection.Open();
 
-                    T t = default;
+                    T? t = default;
 
                     using (IDataReader reader = command.ExecuteReader())
                     {
@@ -139,11 +175,12 @@ namespace CarRental.Controllers.Shared
 
         public static bool Exists(string sql, Dictionary<string, object> parameters)
         {
-            using (IDbConnection connection = providerFactory.CreateConnection())
+            EnsureInitialized();
+            using (IDbConnection connection = _providerFactory!.CreateConnection()!)
             {
-                connection.ConnectionString = connectionString;
+                connection.ConnectionString = _configuration!.ConnectionString;
 
-                using (IDbCommand command = providerFactory.CreateCommand())
+                using (IDbCommand command = _providerFactory!.CreateCommand()!)
                 {
                     command.CommandText = sql;
 
@@ -160,7 +197,7 @@ namespace CarRental.Controllers.Shared
             }
         }
 
-        private static void SetParameters(this IDbCommand command, Dictionary<string, object> parameters)
+        private static void SetParameters(this IDbCommand command, Dictionary<string, object>? parameters)
         {
             if (parameters == null || parameters.Count == 0)
                 return;
@@ -182,7 +219,8 @@ namespace CarRental.Controllers.Shared
 
         private static string AppendSelectIdentity(this string sql)
         {
-            switch (providerName)
+            EnsureInitialized();
+            switch (_configuration!.ProviderName)
             {
                 case "System.Data.SqlClient": return sql + ";SELECT SCOPE_IDENTITY()";
 
@@ -192,7 +230,7 @@ namespace CarRental.Controllers.Shared
             }
         }
 
-        public static bool IsNullOrEmpty(this object value)
+        public static bool IsNullOrEmpty(this object? value)
         {
             return (value is string && string.IsNullOrEmpty((string)value)) ||
                     value == null;

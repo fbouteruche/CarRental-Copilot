@@ -1,0 +1,62 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.31903.59
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{0C8A8F3B-C093-42B2-8910-2C0FFC921AB5}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CarRental.Domain", "src\CarRental.Domain\CarRental.Domain.csproj", "{7F169E59-39E2-4908-BE88-38206B8983F7}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CarRental.Controllers", "src\CarRental.Controllers\CarRental.Controllers.csproj", "{35789073-23E1-426D-BBC2-E1AF3DB9935E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CarRental.BlazorApp", "src\CarRental.BlazorApp\CarRental.BlazorApp.csproj", "{A8C0DD1F-D307-4C7B-B565-207997F43A7E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CarRental.Domain.Tests", "src\CarRental.Domain.Tests\CarRental.Domain.Tests.csproj", "{D62B0F01-74B0-4E89-B9C4-CD87F8A8A5A1}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CarRental.Controllers.Tests", "src\CarRental.Controllers.Tests\CarRental.Controllers.Tests.csproj", "{B18C9C7E-E5A2-4F91-A8E4-F3D6E7B1C5F2}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CarRental.BlazorApp.Tests", "src\CarRental.BlazorApp.Tests\CarRental.BlazorApp.Tests.csproj", "{C72B1C99-3E45-4CB2-B123-856F3C8B3A74}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{7F169E59-39E2-4908-BE88-38206B8983F7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7F169E59-39E2-4908-BE88-38206B8983F7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7F169E59-39E2-4908-BE88-38206B8983F7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7F169E59-39E2-4908-BE88-38206B8983F7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{35789073-23E1-426D-BBC2-E1AF3DB9935E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{35789073-23E1-426D-BBC2-E1AF3DB9935E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{35789073-23E1-426D-BBC2-E1AF3DB9935E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{35789073-23E1-426D-BBC2-E1AF3DB9935E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A8C0DD1F-D307-4C7B-B565-207997F43A7E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A8C0DD1F-D307-4C7B-B565-207997F43A7E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A8C0DD1F-D307-4C7B-B565-207997F43A7E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A8C0DD1F-D307-4C7B-B565-207997F43A7E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D62B0F01-74B0-4E89-B9C4-CD87F8A8A5A1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D62B0F01-74B0-4E89-B9C4-CD87F8A8A5A1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D62B0F01-74B0-4E89-B9C4-CD87F8A8A5A1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D62B0F01-74B0-4E89-B9C4-CD87F8A8A5A1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B18C9C7E-E5A2-4F91-A8E4-F3D6E7B1C5F2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B18C9C7E-E5A2-4F91-A8E4-F3D6E7B1C5F2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B18C9C7E-E5A2-4F91-A8E4-F3D6E7B1C5F2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B18C9C7E-E5A2-4F91-A8E4-F3D6E7B1C5F2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C72B1C99-3E45-4CB2-B123-856F3C8B3A74}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C72B1C99-3E45-4CB2-B123-856F3C8B3A74}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C72B1C99-3E45-4CB2-B123-856F3C8B3A74}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C72B1C99-3E45-4CB2-B123-856F3C8B3A74}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{7F169E59-39E2-4908-BE88-38206B8983F7} = {0C8A8F3B-C093-42B2-8910-2C0FFC921AB5}
+		{35789073-23E1-426D-BBC2-E1AF3DB9935E} = {0C8A8F3B-C093-42B2-8910-2C0FFC921AB5}
+		{A8C0DD1F-D307-4C7B-B565-207997F43A7E} = {0C8A8F3B-C093-42B2-8910-2C0FFC921AB5}
+		{D62B0F01-74B0-4E89-B9C4-CD87F8A8A5A1} = {0C8A8F3B-C093-42B2-8910-2C0FFC921AB5}
+		{B18C9C7E-E5A2-4F91-A8E4-F3D6E7B1C5F2} = {0C8A8F3B-C093-42B2-8910-2C0FFC921AB5}
+		{C72B1C99-3E45-4CB2-B123-856F3C8B3A74} = {0C8A8F3B-C093-42B2-8910-2C0FFC921AB5}
+	EndGlobalSection
+EndGlobal

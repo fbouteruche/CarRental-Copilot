@@ -1,0 +1,56 @@
+FROM mcr.microsoft.com/mssql/server:2022-latest
+
+USER root
+
+# Install SQL Server tools directly from Microsoft
+RUN apt-get update && \
+    apt-get install -y wget ca-certificates && \
+    # Download and install SQL Server tools using direct package download
+    wget -q https://packages.microsoft.com/ubuntu/22.04/prod/pool/main/m/mssql-tools18/mssql-tools18_18.1.1.1-1_amd64.deb && \
+    wget -q https://packages.microsoft.com/ubuntu/22.04/prod/pool/main/u/unixodbc-dev/unixodbc-dev_2.3.7-2ubuntu2_amd64.deb && \
+    wget -q https://packages.microsoft.com/ubuntu/22.04/prod/pool/main/u/unixodbc/unixodbc_2.3.7-2ubuntu2_amd64.deb && \
+    ACCEPT_EULA=Y dpkg -i --force-depends *.deb || true && \
+    apt-get install -f -y && \
+    echo 'export PATH="$PATH:/opt/mssql-tools18/bin"' >> ~/.bashrc && \
+    rm -f *.deb && \
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/*
+
+# Create app directory
+WORKDIR /usr/src/app
+
+# Copy initialization script
+COPY sql-scripts/init-db.sql /usr/src/app/init-db.sql
+
+# Create a startup script
+RUN echo '#!/bin/bash \n\
+echo "Starting SQL Server..." \n\
+/opt/mssql/bin/sqlservr & \n\
+echo "Waiting for SQL Server to start..." \n\
+sleep 30 \n\
+echo "Checking if sqlcmd is available..." \n\
+if [ ! -f /opt/mssql-tools18/bin/sqlcmd ]; then \n\
+    echo "ERROR: sqlcmd not found at /opt/mssql-tools18/bin/sqlcmd" \n\
+    ls -la /opt/mssql-tools18/bin/ || echo "Directory does not exist" \n\
+    exit 1 \n\
+fi \n\
+echo "Running initialization script..." \n\
+/opt/mssql-tools18/bin/sqlcmd -S 127.0.0.1 -U sa -P CarRental#123 -C -i /usr/src/app/init-db.sql \n\
+echo "Database initialization complete." \n\
+tail -f /dev/null' > /usr/src/app/start.sh
+
+# Grant permissions for scripts
+RUN chmod +x /usr/src/app/init-db.sql /usr/src/app/start.sh
+
+# Set environment variables
+ENV SA_PASSWORD=CarRental#123
+ENV ACCEPT_EULA=Y
+ENV MSSQL_PID=Express
+ENV PATH="$PATH:/opt/mssql-tools18/bin"
+
+# Expose SQL Server port
+EXPOSE 1433
+
+# Run SQL Server and initialize the database
+USER mssql
+CMD /bin/bash /usr/src/app/start.sh

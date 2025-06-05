@@ -9,11 +9,11 @@ namespace CarRental.Domain.PersonModule
 {
     public abstract class Person : BaseEntity
     {
-        public string Name { get; set; }
-        public string UniqueId { get; set; }
-        public string Address { get; set; }
-        public string Phone { get; set; }
-        public string Email { get; set; }
+        public string Name { get; set; } = string.Empty;
+        public string UniqueId { get; set; } = string.Empty;
+        public string Address { get; set; } = string.Empty;
+        public string Phone { get; set; } = string.Empty;
+        public string Email { get; set; } = string.Empty;
         public bool IsPhysicalPerson { get; set; }
 
         public virtual string ValidatePerson()

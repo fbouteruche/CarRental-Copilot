@@ -1,4 +1,4 @@
-﻿using CarRental.Controllers.CustomersModule;
+using CarRental.Controllers.CustomersModule;
 using CarRental.Controllers.CouponModule;
 using CarRental.Controllers.EmployeeModule;
 using CarRental.Controllers.RentalModule;
@@ -20,8 +20,20 @@ namespace CarRental.Controllers.RentalServiceRelationshipModule
     public class RentalServiceRelationshipController : Controller<RentalServiceRelationship>
     {
         private int id = 0;
-        ServiceController serviceController = new ServiceController();
-        RentalController rentalController = new RentalController(new VehicleController(), new EmployeeController(), new CustomerController(), new ServiceController(), new CouponController());
+        private readonly ServiceController serviceController;
+        private readonly RentalController rentalController;
+        
+        public RentalServiceRelationshipController()
+        {
+            serviceController = new ServiceController();
+            rentalController = new RentalController();
+        }
+        
+        public RentalServiceRelationshipController(ServiceController serviceController, RentalController rentalController)
+        {
+            this.serviceController = serviceController;
+            this.rentalController = rentalController;
+        }
         #region relationship queries
         private const string sqlInsertRelationship =
                 @"INSERT INTO [Service_Rental]
@@ -94,7 +106,7 @@ namespace CarRental.Controllers.RentalServiceRelationshipModule
             return validationResult;
         }
 
-        public override RentalServiceRelationship SelectById(int id)
+        public override RentalServiceRelationship? SelectById(int id)
         {
             return Db.Get(sqlSelectRelationshipById, ConvertToRelationship, AddParameter("Id", id));
         }
@@ -118,7 +130,11 @@ namespace CarRental.Controllers.RentalServiceRelationshipModule
             foreach (Service item in serviceController.SelectAll())
                 if (item.Id == serviceId)
                     filteredServices.Add(item);
-            Rental rental = rentalController.SelectById(rentalId);
+            Rental? rental = rentalController.SelectById(rentalId);
+            if (rental == null)
+            {
+                throw new InvalidOperationException($"Rental with ID {rentalId} not found.");
+            }
 
             return new RentalServiceRelationship(relationshipId, rental, filteredServices);
         }
