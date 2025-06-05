@@ -1,3 +1,4 @@
+using Microsoft.Extensions.Configuration;
 using Microsoft.Playwright;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Microsoft.AspNetCore.Mvc.Testing;
@@ -41,9 +42,23 @@ namespace CarRental.BlazorApp.Tests.Infrastructure
             // Create WebApplicationFactory for the Blazor app
             _factory = new WebApplicationFactory<Program>();
 
-            // Get the base URL from the test server
-            var client = _factory.CreateClient();
-            _baseUrl = client.BaseAddress?.ToString()?.TrimEnd('/');
+            // Use ConfigurationBuilder to read Playwright.BaseUrl from appsettings.json
+            var config = new ConfigurationBuilder()
+                .SetBasePath(AppContext.BaseDirectory)
+                .AddJsonFile("appsettings.json", optional: true, reloadOnChange: false)
+                .Build();
+            var configBaseUrl = config["Playwright:BaseUrl"];
+
+            if (!string.IsNullOrWhiteSpace(configBaseUrl))
+            {
+                _baseUrl = configBaseUrl.TrimEnd('/');
+            }
+            else
+            {
+                // Fallback: Get the base URL from the test server
+                var client = _factory.CreateClient();
+                _baseUrl = client.BaseAddress?.ToString()?.TrimEnd('/');
+            }
         }
 
         [AssemblyCleanup]
@@ -60,7 +75,10 @@ namespace CarRental.BlazorApp.Tests.Infrastructure
             if (_browser == null)
                 throw new InvalidOperationException("Browser not initialized - Playwright tests cannot run due to missing browser binaries");
 
-            var context = await _browser.NewContextAsync();
+            var context = await _browser.NewContextAsync(new BrowserNewContextOptions
+            {
+                BaseURL = _baseUrl
+            });
             return await context.NewPageAsync();
         }
 
